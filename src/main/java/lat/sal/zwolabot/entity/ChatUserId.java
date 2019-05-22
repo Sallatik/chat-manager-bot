@@ -45,4 +45,10 @@ public class ChatUserId implements Serializable {
     }
 
     public ChatUserId () {}
+
+    public ChatUserId(long chatId, long userId) {
+
+        this.chatId = chatId;
+        this.userId = userId;
+    }
 }

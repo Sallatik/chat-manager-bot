@@ -24,7 +24,16 @@ public class ChatUser {
     private int warns;
     private Date lastMessageDate;
     private boolean banned;
+    private boolean moderator;
     private String note;
+
+    public boolean isModerator() {
+        return moderator;
+    }
+
+    public void setModerator(boolean moderator) {
+        this.moderator = moderator;
+    }
 
     public ChatUserId getChatUserId() {
         return chatUserId;
@@ -83,4 +92,16 @@ public class ChatUser {
     }
 
     public ChatUser() {}
+
+    public ChatUser(long chatId, long userId) {
+
+        this.chatUserId = new ChatUserId(chatId, userId);
+    }
+
+    public ChatUser(Chat chat, User user) {
+
+        this.chatUserId = new ChatUserId(chat.getId(), user.getId());
+        this.chat = chat;
+        this.user = user;
+    }
 }

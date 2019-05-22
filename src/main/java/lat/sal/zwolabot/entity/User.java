@@ -13,7 +13,7 @@ public class User {
     private String lastName;
     private String username;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private UserStatus status;
 
     @ManyToOne
@@ -22,6 +22,12 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<ChatUser> chats;
 
+    public void update(User user) {
+
+        setFirstName(user.getFirstName());
+        setLastName(user.getLastName());
+        setUsername(user.getUsername());
+    }
     public long getId() {
         return id;
     }
@@ -60,6 +66,7 @@ public class User {
         this.firstName = user.firstName();
         this.lastName = user.lastName();
         this.username = user.username();
+        this.status = new UserStatus();
     }
 
     public UserStatus getStatus() {

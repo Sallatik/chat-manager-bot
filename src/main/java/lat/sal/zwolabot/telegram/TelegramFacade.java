@@ -1,5 +1,7 @@
 package lat.sal.zwolabot.telegram;
 
+import lat.sal.zwolabot.entity.Chat;
+
 public interface TelegramFacade {
 
     void kick(long chatId, long userId);
@@ -7,4 +9,6 @@ public interface TelegramFacade {
     void ban(long chatId, long userId);
 
     void unban(long chatId, long userId);
+
+    Chat getChat(long id);
 }

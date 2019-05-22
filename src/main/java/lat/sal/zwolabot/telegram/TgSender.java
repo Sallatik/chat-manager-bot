@@ -19,7 +19,7 @@ public class TgSender {
         R response = telegramBot.execute(request);
 
         if (!response.isOk())
-            logger.warning(response.description());
+            logger.warning("Telegram error: " + response.description());
 
         return response;
     }

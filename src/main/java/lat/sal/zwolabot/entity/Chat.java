@@ -18,6 +18,13 @@ public class Chat {
     @OneToMany(mappedBy = "chat")
     private List<ChatUser> users;
 
+    public void update(Chat chat) {
+
+        setTitle(chat.getTitle());
+        setDescription(chat.getDescription());
+        setInviteLink(chat.getInviteLink());
+    }
+
     public long getId() {
         return id;
     }
