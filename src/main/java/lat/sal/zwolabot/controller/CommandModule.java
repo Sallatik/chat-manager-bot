@@ -8,6 +8,7 @@ import lat.sal.zwolabot.ZwolabotException;
 import lat.sal.zwolabot.entity.Chat;
 import lat.sal.zwolabot.entity.User;
 import lat.sal.zwolabot.service.ChatService;
+import lat.sal.zwolabot.service.FilterService;
 import lat.sal.zwolabot.service.LevelAndChats;
 import lat.sal.zwolabot.service.UserService;
 import lat.sal.zwolabot.telegram.TgSender;
@@ -23,6 +24,7 @@ public class CommandModule {
     private UserService userService;
     private TgSender tgSender;
     private ChatService chatService;
+    private FilterService filterService;
 
     @MessageListener(filter = "/start & private")
     public void register(Message message) {
@@ -31,7 +33,7 @@ public class CommandModule {
 
         try {
             userService.addUser(user);
-            reply("Добро пожаловать!", message);
+            reply("Добро пожаловать! Чтобы получить информацию о вашем уровне доступа, а так же список доступных чатов, используйте команду /info", message);
         } catch (ZwolabotException e) {
             reply(e.getMessage(), message);
         }
@@ -173,7 +175,7 @@ public class CommandModule {
     @MessageListener(filter = "/warn & supergroup & reply")
     public void warn(Message message) {
 
-        if (!userService.isAdmin(message.from().id())) {
+        if (!(userService.isAdmin(message.from().id()) || chatService.isModerator(message.chat().id(), message.from().id()))) {
             reply("Вы не админ", message);
             return;
         }
@@ -192,7 +194,7 @@ public class CommandModule {
     @MessageListener(filter = "/clear & supergroup & reply")
     public void clearWarns(Message message) {
 
-        if (!userService.isAdmin(message.from().id())) {
+        if (!(userService.isAdmin(message.from().id()) || chatService.isModerator(message.chat().id(), message.from().id()))) {
             reply("Вы не админ", message);
             return;
         }
@@ -205,6 +207,60 @@ public class CommandModule {
         } catch (ZwolabotException e) {
             reply(e.getMessage(), message);
         }
+    }
+
+    // wordfilter
+
+    @MessageListener(filter = "/filter & text & private")
+    public void restrictWord(Message message) {
+
+        if (!userService.isAdmin(message.from().id())) {
+            reply("Вы не админ", message);
+            return;
+        }
+
+        String word = getArgument(message.text(), "/filter".length());
+
+        try {
+            filterService.restrictWord(word);
+            reply("Готово", message);
+        } catch (ZwolabotException e) {
+            reply(e.getMessage(), message);
+        }
+    }
+
+    @MessageListener(filter = "/unfilter & text & private")
+    public void unrestrictWord(Message message) {
+
+        if (!userService.isAdmin(message.from().id())) {
+            reply("Вы не админ", message);
+            return;
+        }
+
+        String word = getArgument(message.text(), "/unfilter".length());
+
+        try {
+            filterService.unrestrictWord(word);
+            reply("Готово", message);
+        } catch (ZwolabotException e) {
+            reply(e.getMessage(), message);
+        }
+    }
+
+    @MessageListener(filter = "/badwords & private")
+    public void getRestrictedWords(Message message) {
+
+        if (!userService.isAdmin(message.from().id())) {
+            reply("Вы не админ", message);
+            return;
+        }
+
+        try {
+            reply("Фильтруемые слова и фразы: \n" + filterService.getRestrictedWords(), message);
+        } catch (ZwolabotException e) {
+            reply(e.getMessage(), message);
+        }
+
     }
 
     private String getArgument(String text, int offset) {
@@ -221,9 +277,10 @@ public class CommandModule {
     }
 
     @Autowired
-    public CommandModule(UserService userService, TgSender tgSender, ChatService chatService) {
+    public CommandModule(UserService userService, TgSender tgSender, ChatService chatService, FilterService filterService) {
         this.userService = userService;
         this.tgSender = tgSender;
         this.chatService = chatService;
+        this.filterService = filterService;
     }
 }

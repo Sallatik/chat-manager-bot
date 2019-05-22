@@ -1,9 +1,6 @@
 package lat.sal.zwolabot.telegram;
 
-import com.pengrad.telegrambot.request.ExportChatInviteLink;
-import com.pengrad.telegrambot.request.GetChat;
-import com.pengrad.telegrambot.request.KickChatMember;
-import com.pengrad.telegrambot.request.UnbanChatMember;
+import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.GetChatResponse;
 import com.pengrad.telegrambot.response.StringResponse;
 import lat.sal.zwolabot.ZwolabotException;
@@ -49,6 +46,18 @@ public class TelegramFacadeImpl implements TelegramFacade{
             throw new ZwolabotException("Не удалось получить данные чата.");
 
         return new Chat(getChatResponse.chat());
+    }
+
+    @Override
+    public void deleteMessage(long chatId, int messageId) {
+
+        tgSender.executeOrLog(new DeleteMessage(chatId, messageId));
+    }
+
+    @Override
+    public void sendMessage(String text, long chatId) {
+
+        tgSender.executeOrLog(new SendMessage(chatId, text));
     }
 
     @Autowired

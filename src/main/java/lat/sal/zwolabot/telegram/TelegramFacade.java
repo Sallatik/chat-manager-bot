@@ -11,4 +11,8 @@ public interface TelegramFacade {
     void unban(long chatId, long userId);
 
     Chat getChat(long id);
+
+    void deleteMessage(long chatId, int messageId);
+
+    void sendMessage(String text, long chatId);
 }

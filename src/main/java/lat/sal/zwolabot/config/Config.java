@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import redis.clients.jedis.Jedis;
 import sallat.jelebot.Jelebot;
 import sallat.jelebot.update.LongPollingUpdateSource;
 import sallat.jelebot.update.UpdateSource;
@@ -37,5 +38,10 @@ public class Config {
                 .register(context.getBean(AutoModule.class))
                 .register(context.getBean(CommandModule.class))
                 .setUpdateSource(updateSource());
+    }
+
+    @Bean
+    public Jedis jedis() {
+        return new Jedis("localhost");
     }
 }
