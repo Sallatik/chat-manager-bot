@@ -1,8 +1,9 @@
 package lat.sal.zwolabot.config;
 
 import com.pengrad.telegrambot.TelegramBot;
-import lat.sal.zwolabot.controller.AutoModule;
-import lat.sal.zwolabot.controller.CommandModule;
+import lat.sal.zwolabot.controller.ButlerModule;
+import lat.sal.zwolabot.controller.BaseModule;
+import lat.sal.zwolabot.controller.CensorModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -35,8 +36,9 @@ public class Config {
 
         return Jelebot.create(bot())
                 // register modules
-                .register(context.getBean(AutoModule.class))
-                .register(context.getBean(CommandModule.class))
+                .register(context.getBean(BaseModule.class))
+                .register(context.getBean(ButlerModule.class))
+                .register(context.getBean(CensorModule.class))
                 .setUpdateSource(updateSource());
     }
 

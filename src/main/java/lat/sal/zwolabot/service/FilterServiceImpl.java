@@ -2,6 +2,7 @@ package lat.sal.zwolabot.service;
 
 import lat.sal.zwolabot.telegram.TelegramFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
@@ -16,6 +17,13 @@ public class FilterServiceImpl implements FilterService {
 
     private TelegramFacade telegramFacade;
     private Jedis jedis;
+
+    @Value("${zwolabot.wordfilter.words-key:words}")
+    private String wordsKey;
+    @Value("${zwolabot.wordfilter.stickers-key:stickers}")
+    private String stickersKey;
+    @Value("${zwolabot.wordfilter.packs-key:packs}")
+    private String packsKey;
 
     private Set<String> words;
     private Set<String> stickers;
@@ -50,31 +58,31 @@ public class FilterServiceImpl implements FilterService {
     @PostConstruct
     public void init() {
 
-        words = jedis.smembers("words");
-        stickers = jedis.smembers("stikers");
-        packs = jedis.smembers("packs");
+        words = jedis.smembers(wordsKey);
+        stickers = jedis.smembers(stickersKey);
+        packs = jedis.smembers(packsKey);
     }
 
     @Override
     public void restrictWord(String word) {
 
-        jedis.sadd("words", word.toLowerCase());
-        words = jedis.smembers("words");
+        jedis.sadd(wordsKey, word.toLowerCase());
+        words = jedis.smembers(wordsKey);
     }
 
     @Override
     public void restrictSticker(String stickerId) {
 
-        jedis.sadd("stickers", stickerId);
-        stickers = jedis.smembers("stickers");
+        jedis.sadd(stickersKey, stickerId);
+        stickers = jedis.smembers(stickersKey);
     }
 
     @Override
     public void restrictPack(String packName) {
 
 
-        jedis.sadd("packs", packName);
-        packs = jedis.smembers("packs");
+        jedis.sadd(packsKey, packName);
+        packs = jedis.smembers(packsKey);
     }
 
     @Override
@@ -86,8 +94,8 @@ public class FilterServiceImpl implements FilterService {
     @Override
     public void unrestrictWord(String word) {
 
-        jedis.srem("words", word.toLowerCase());
-        words = jedis.smembers("words");
+        jedis.srem(wordsKey, word.toLowerCase());
+        words = jedis.smembers(wordsKey);
     }
 
     @Autowired

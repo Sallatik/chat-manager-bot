@@ -21,7 +21,7 @@ public class ChatServiceImpl implements ChatService {
     private ChatDAO chatDAO;
     private UserDAO userDAO;
     private AccessLevelDAO accessLevelDAO;
-    private ErrorManager errorManager;
+    private ErrorService errorService;
     private TelegramFacade telegramFacade;
     private ChatUserDAO chatUserDAO;
 
@@ -29,8 +29,9 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     public void addChat(long id, String level) {
 
+        errorService.requireNull(chatDAO.getChat(id));
         AccessLevel accessLevel = accessLevelDAO.getAccessLevel(level);
-        errorManager.requireNonNull(accessLevel);
+        errorService.requireNonNull(accessLevel);
 
         Chat chat = telegramFacade.getChat(id);
         chat.setAccessLevel(accessLevel);
@@ -44,7 +45,7 @@ public class ChatServiceImpl implements ChatService {
 
         Chat chat = telegramFacade.getChat(id);
         Chat persistent = chatDAO.getChat(id);
-        errorManager.requireNonNull(persistent);
+        errorService.requireNonNull(persistent);
         persistent.update(chat);
     }
 
@@ -72,8 +73,8 @@ public class ChatServiceImpl implements ChatService {
         Chat chat = chatDAO.getChat(chatId);
         User user = userDAO.getUser(userId);
 
-        errorManager.requireNonNull(chat);
-        errorManager.requireNonNull(user);
+        errorService.requireNonNull(chat);
+        errorService.requireNonNull(user);
         return getOrCreateChatUser(chat, user);
     }
 
@@ -87,13 +88,6 @@ public class ChatServiceImpl implements ChatService {
         }
 
         return chatUser;
-    }
-
-    @Override
-    public boolean isModerator(long chatId, long userId) {
-
-        ChatUser chatUser = chatUserDAO.getChatUser(chatId, userId);
-        return chatUser != null && chatUser.isModerator();
     }
 
     @Override
@@ -146,11 +140,11 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Autowired
-    public ChatServiceImpl(ChatDAO chatDAO, UserDAO userDAO, AccessLevelDAO accessLevelDAO, ErrorManager errorManager, TelegramFacade telegramFacade, ChatUserDAO chatUserDAO) {
+    public ChatServiceImpl(ChatDAO chatDAO, UserDAO userDAO, AccessLevelDAO accessLevelDAO, ErrorService errorService, TelegramFacade telegramFacade, ChatUserDAO chatUserDAO) {
         this.chatDAO = chatDAO;
         this.userDAO = userDAO;
         this.accessLevelDAO = accessLevelDAO;
-        this.errorManager = errorManager;
+        this.errorService = errorService;
         this.telegramFacade = telegramFacade;
         this.chatUserDAO = chatUserDAO;
     }

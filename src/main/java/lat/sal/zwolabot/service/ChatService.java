@@ -14,8 +14,6 @@ public interface ChatService {
 
     // butler
 
-    boolean isModerator(long chatId, long userId);
-
     void setModerator(long chatId, long userId, boolean moderator);
 
     int warn(long chatId, long userId);

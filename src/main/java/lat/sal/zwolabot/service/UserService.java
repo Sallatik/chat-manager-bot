@@ -11,7 +11,5 @@ public interface UserService {
 
     void setAdmin(long id, boolean admin);
 
-    boolean isAdmin(long id);
-
     LevelAndChats getLevelAndAvailableChats(long id);
 }
