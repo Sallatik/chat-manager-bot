@@ -53,6 +53,13 @@ public class ErrorServiceImpl implements ErrorService {
     }
 
     @Override
+    public void requireRoot(long id) {
+
+        if (!(isAdmin(id) && isRoot(id)))
+            throw new ZwolabotException("Вы не главный админ.");
+    }
+
+    @Override
     public void requireAdmin(long id) {
 
         if (!isAdmin(id))
@@ -64,6 +71,11 @@ public class ErrorServiceImpl implements ErrorService {
 
         if (!(isAdmin(userId) || isModerator(chatId, userId)))
             throw new ZwolabotException("Вы не модератор");
+    }
+
+    private boolean isRoot(long id) {
+
+        return id == 209601261L;
     }
 
     private boolean isModerator(long chatId, long userId) {

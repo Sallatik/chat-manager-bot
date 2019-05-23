@@ -16,6 +16,8 @@ public interface ErrorService {
 
     void requireNull(Chat chat);
 
+    void requireRoot(long id);
+
     void requireAdmin(long id);
 
     void reqireAdminOrModerator(long chatId, long userId);

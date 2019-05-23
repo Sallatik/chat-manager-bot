@@ -29,7 +29,8 @@ public class BaseModule {
 
             User user = new User(message.from());
             userService.addUser(user);
-            helper.reply("Добро пожаловать! Чтобы получить информацию о вашем уровне доступа, а так же список доступных чатов, используйте команду /info", message);
+            helper.reply("Добро пожаловать! Чтобы получить информацию о вашем уровне доступа, " +
+                    "а так же список доступных чатов, используйте команду /info", message);
 
         } catch (ZwolabotException e) {
             helper.reply(e.getMessage(), message);
@@ -74,6 +75,20 @@ public class BaseModule {
         }
     }
 
+    @MessageListener(filter = "/update & supergroup")
+    public void updateChat(Message message) {
+
+        try {
+
+            errorService.requireAdmin(message.from().id());
+            chatService.updateChat(message.chat().id());
+            helper.reply("Готово", message);
+
+        } catch (ZwolabotException e) {
+            helper.reply(e.getMessage(), message);
+        }
+    }
+
     @MessageListener(filter = "/setlevel & text & reply")
     public void setUserLevel(Message message) {
 
@@ -82,6 +97,34 @@ public class BaseModule {
             errorService.requireAdmin(message.from().id());
             String level = helper.getArgument(message.text(), "/setlevel".length());
             userService.setUserAccessLevel(message.replyToMessage().from().id(), level);
+            helper.reply("Готово", message);
+
+        } catch (ZwolabotException e) {
+            helper.reply(e.getMessage(), message);
+        }
+    }
+
+    @MessageListener(filter = "/op & reply")
+    public void setAdmin(Message message) {
+
+        try {
+
+            errorService.requireRoot(message.from().id());
+            userService.setAdmin(message.replyToMessage().from().id(), true);
+            helper.reply("Готово", message);
+
+        } catch (ZwolabotException e) {
+            helper.reply(e.getMessage(), message);
+        }
+    }
+
+    @MessageListener(filter = "/deop & reply")
+    public void setNoAdmin(Message message) {
+
+        try {
+
+            errorService.requireRoot(message.from().id());
+            userService.setAdmin(message.replyToMessage().from().id(), false);
             helper.reply("Готово", message);
 
         } catch (ZwolabotException e) {

@@ -15,7 +15,7 @@ public class CensorModule {
     private FilterService filterService;
     private ControllerHelper helper;
 
-    @MessageListener(filter = "/filter & text & private")
+    @MessageListener(filter = "/filter & text")
     public void restrictWord(Message message) {
 
         try {
@@ -30,7 +30,7 @@ public class CensorModule {
         }
     }
 
-    @MessageListener(filter = "/unfilter & text & private")
+    @MessageListener(filter = "/unfilter & text")
     public void unrestrictWord(Message message) {
 
         try {
@@ -45,7 +45,7 @@ public class CensorModule {
         }
     }
 
-    @MessageListener(filter = "/badwords & private")
+    @MessageListener(filter = "/badwords")
     public void getRestrictedWords(Message message) {
 
         try {
