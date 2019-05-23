@@ -1,13 +1,10 @@
 package lat.sal.zwolabot.controller;
 
 import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.request.ParseMode;
-import com.pengrad.telegrambot.request.SendMessage;
 import lat.sal.zwolabot.ZwolabotException;
 import lat.sal.zwolabot.entity.Chat;
 import lat.sal.zwolabot.entity.User;
 import lat.sal.zwolabot.service.*;
-import lat.sal.zwolabot.telegram.TgSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sallat.jelebot.annotation.listeners.MessageListener;
@@ -127,6 +124,21 @@ public class BaseModule {
             errorService.requireRoot(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setAdmin(user.getId(), false);
+            helper.reply("Готово", message);
+
+        } catch (ZwolabotException e) {
+            helper.reply(e.getMessage(), message);
+        }
+    }
+
+    @MessageListener(filter = "/gban")
+    public void gban(Message message) {
+
+        try {
+
+            errorService.requireAdmin(message.from().id());
+            User user = helper.getTargetUser(message);
+            userService.setUserAccessLevel(user.getId(), "ban");
             helper.reply("Готово", message);
 
         } catch (ZwolabotException e) {
