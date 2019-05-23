@@ -1,6 +1,7 @@
 package lat.sal.zwolabot.config;
 
 import com.pengrad.telegrambot.TelegramBot;
+import lat.sal.zwolabot.dev.LongPollingProfiler;
 import lat.sal.zwolabot.controller.ButlerModule;
 import lat.sal.zwolabot.controller.BaseModule;
 import lat.sal.zwolabot.controller.CensorModule;
@@ -40,6 +41,7 @@ public class Config {
                 .register(context.getBean(ButlerModule.class))
                 .register(context.getBean(CensorModule.class))
                 .setUpdateSource(updateSource());
+                //.setUpdateSource(context.getBean(LongPollingProfiler.class));
     }
 
     @Bean
