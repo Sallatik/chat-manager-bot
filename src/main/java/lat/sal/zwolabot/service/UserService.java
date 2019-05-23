@@ -12,4 +12,6 @@ public interface UserService {
     void setAdmin(long id, boolean admin);
 
     LevelAndChats getLevelAndAvailableChats(long id);
+
+    User getUserByUsername(String username);
 }

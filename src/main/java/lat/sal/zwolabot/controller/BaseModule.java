@@ -104,13 +104,14 @@ public class BaseModule {
         }
     }
 
-    @MessageListener(filter = "/op & reply")
+    @MessageListener(filter = "/op")
     public void setAdmin(Message message) {
 
         try {
 
             errorService.requireRoot(message.from().id());
-            userService.setAdmin(message.replyToMessage().from().id(), true);
+            User user = helper.getTargetUser(message);
+            userService.setAdmin(user.getId(), true);
             helper.reply("Готово", message);
 
         } catch (ZwolabotException e) {
@@ -118,13 +119,14 @@ public class BaseModule {
         }
     }
 
-    @MessageListener(filter = "/deop & reply")
+    @MessageListener(filter = "/deop")
     public void setNoAdmin(Message message) {
 
         try {
 
             errorService.requireRoot(message.from().id());
-            userService.setAdmin(message.replyToMessage().from().id(), false);
+            User user = helper.getTargetUser(message);
+            userService.setAdmin(user.getId(), false);
             helper.reply("Готово", message);
 
         } catch (ZwolabotException e) {

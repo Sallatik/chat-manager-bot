@@ -78,6 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public LevelAndChats getLevelAndAvailableChats(long id) {
 
         User user = userDAO.getUser(id);
@@ -90,6 +91,15 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
 
         return new LevelAndChats(level, chats);
+    }
+
+    @Override
+    @Transactional
+    public User getUserByUsername(String username) {
+
+        User user = userDAO.getUserByUsername(username);
+        errorService.requireNonNull(user);
+        return user;
     }
 
     @Autowired
