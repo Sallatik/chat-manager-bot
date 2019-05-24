@@ -190,7 +190,7 @@ public class CensorModule {
 
     }
 
-    @MessageListener(filter = "supergroup & text")
+    @MessageListener(filter = "supergroup & text & ! /filter & ! /unfilters")
     public void censorText(Message message) {
         if (message.from().isBot())
             return;
