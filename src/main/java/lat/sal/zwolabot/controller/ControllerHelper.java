@@ -3,6 +3,7 @@ package lat.sal.zwolabot.controller;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendSticker;
 import lat.sal.zwolabot.ZwolabotException;
 import lat.sal.zwolabot.entity.User;
 import lat.sal.zwolabot.service.UserService;
@@ -27,6 +28,14 @@ public class ControllerHelper {
                         .replyToMessageId(message.messageId())
                         .parseMode(ParseMode.Markdown)
                         .disableWebPagePreview(true)
+        );
+    }
+
+    public void stickerReply(String sticker, Message message) {
+
+        tgSender.executeOrLog(
+                new SendSticker(message.chat().id(), sticker)
+                .replyToMessageId(message.messageId())
         );
     }
 

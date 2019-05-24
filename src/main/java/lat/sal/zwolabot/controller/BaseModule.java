@@ -180,6 +180,7 @@ public class BaseModule {
 
     @Autowired
     public BaseModule(UserService userService, ChatService chatService, ErrorService errorService, ControllerHelper helper) {
+
         this.userService = userService;
         this.chatService = chatService;
         this.errorService = errorService;

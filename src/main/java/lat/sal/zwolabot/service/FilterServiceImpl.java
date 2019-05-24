@@ -7,9 +7,7 @@ import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Component
@@ -53,6 +51,8 @@ public class FilterServiceImpl implements FilterService {
     @Override
     public void onStickerMessage(String setName, String fileId, long chatId, long userId, int messageId) {
 
+        if (packs.contains(setName) || stickers.contains(fileId))
+            telegramFacade.deleteMessage(chatId, messageId);
     }
 
     @PostConstruct
@@ -92,14 +92,41 @@ public class FilterServiceImpl implements FilterService {
     }
 
     @Override
+    public Set<String> getRestrictedPacks() {
+
+        return new HashSet<>(packs);
+    }
+
+    @Override
+    public Set<String> getRestrictedStickers() {
+
+        return new HashSet<>(stickers);
+    }
+
+    @Override
     public void unrestrictWord(String word) {
 
         jedis.srem(wordsKey, word.toLowerCase());
         words = jedis.smembers(wordsKey);
     }
 
+    @Override
+    public void unrestrictSticker(String stickerId) {
+
+        jedis.srem(stickersKey, stickerId);
+        stickers = jedis.smembers(stickersKey);
+    }
+
+    @Override
+    public void unrestrictPack(String packName) {
+
+        jedis.srem(packsKey, packName);
+        packs = jedis.smembers(packsKey);
+    }
+
     @Autowired
     public FilterServiceImpl(TelegramFacade telegramFacade, Jedis jedis) {
+
         this.telegramFacade = telegramFacade;
         this.jedis = jedis;
     }

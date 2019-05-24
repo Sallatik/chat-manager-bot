@@ -15,7 +15,15 @@ public interface FilterService {
 
     void restrictSticker(String stickerId);
 
+    void unrestrictSticker(String stickerId);
+
     void restrictPack(String packName);
 
+    void unrestrictPack(String packName);
+
     Set<String> getRestrictedWords();
+
+    Set<String> getRestrictedPacks();
+
+    Set<String> getRestrictedStickers();
 }
