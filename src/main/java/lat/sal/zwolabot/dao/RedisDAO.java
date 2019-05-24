@@ -21,4 +21,8 @@ public interface RedisDAO {
     void removeRestrictedSticker(String stickerId);
 
     void removeRestrictedPack(String packName);
+
+    boolean isRegistrationOpen();
+
+    void setRegistrationOpen(boolean registrationOpen);
 }

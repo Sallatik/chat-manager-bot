@@ -21,4 +21,6 @@ public interface ErrorService {
     void requireAdmin(long id);
 
     void reqireAdminOrModerator(long chatId, long userId);
+
+    void requireRegistrationOpen();
 }

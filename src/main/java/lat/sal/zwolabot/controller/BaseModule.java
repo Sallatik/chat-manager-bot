@@ -17,6 +17,7 @@ public class BaseModule {
     private UserService userService;
     private ChatService chatService;
     private ErrorService errorService;
+    private SettingsService settingsService;
     private ControllerHelper helper;
 
     @MessageListener(filter = "/start & private")
@@ -101,7 +102,7 @@ public class BaseModule {
         }
     }
 
-    @MessageListener(filter = "/op")
+    @MessageListener(filter = "/admin")
     public void setAdmin(Message message) {
 
         try {
@@ -116,7 +117,7 @@ public class BaseModule {
         }
     }
 
-    @MessageListener(filter = "/deop")
+    @MessageListener(filter = "/noadmin")
     public void setNoAdmin(Message message) {
 
         try {
@@ -140,6 +141,34 @@ public class BaseModule {
             User user = helper.getTargetUser(message);
             userService.setUserAccessLevel(user.getId(), "ban");
             helper.reply("Готово", message);
+
+        } catch (ZwolabotException e) {
+            helper.reply(e.getMessage(), message);
+        }
+    }
+
+    @MessageListener(filter = "/close")
+    public void close(Message message) {
+
+        try {
+
+            errorService.requireAdmin(message.from().id());
+            settingsService.setRegistrationOpen(false);
+            helper.reply("готово", message);
+
+        } catch (ZwolabotException e) {
+            helper.reply(e.getMessage(), message);
+        }
+    }
+
+    @MessageListener(filter = "/open")
+    public void open(Message message) {
+
+        try {
+
+            errorService.requireAdmin(message.from().id());
+            settingsService.setRegistrationOpen(true);
+            helper.reply("готово", message);
 
         } catch (ZwolabotException e) {
             helper.reply(e.getMessage(), message);
@@ -179,11 +208,11 @@ public class BaseModule {
     }
 
     @Autowired
-    public BaseModule(UserService userService, ChatService chatService, ErrorService errorService, ControllerHelper helper) {
-
+    public BaseModule(UserService userService, ChatService chatService, ErrorService errorService, SettingsService settingsService, ControllerHelper helper) {
         this.userService = userService;
         this.chatService = chatService;
         this.errorService = errorService;
+        this.settingsService = settingsService;
         this.helper = helper;
     }
 }

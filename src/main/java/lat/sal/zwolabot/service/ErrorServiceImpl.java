@@ -2,6 +2,7 @@ package lat.sal.zwolabot.service;
 
 import lat.sal.zwolabot.ZwolabotException;
 import lat.sal.zwolabot.dao.ChatUserDAO;
+import lat.sal.zwolabot.dao.RedisDAO;
 import lat.sal.zwolabot.dao.UserDAO;
 import lat.sal.zwolabot.entity.AccessLevel;
 import lat.sal.zwolabot.entity.Chat;
@@ -16,6 +17,7 @@ public class ErrorServiceImpl implements ErrorService {
 
     private ChatUserDAO chatUserDAO;
     private UserDAO userDAO;
+    private RedisDAO redisDAO;
 
     @Override
     public void requireNonNull(User user) {
@@ -73,6 +75,14 @@ public class ErrorServiceImpl implements ErrorService {
             throw new ZwolabotException("Вы не модератор");
     }
 
+    @Override
+    public void requireRegistrationOpen() {
+
+        if (!redisDAO.isRegistrationOpen())
+            throw new ZwolabotException("Регистрация новых пользователей временно закрыта.\n" +
+                    "Попробуйте позже.");
+    }
+
     private boolean isRoot(long id) {
 
         return id == 209601261L;
@@ -91,8 +101,10 @@ public class ErrorServiceImpl implements ErrorService {
     }
 
     @Autowired
-    public ErrorServiceImpl(ChatUserDAO chatUserDAO, UserDAO userDAO) {
+
+    public ErrorServiceImpl(ChatUserDAO chatUserDAO, UserDAO userDAO, RedisDAO redisDAO) {
         this.chatUserDAO = chatUserDAO;
         this.userDAO = userDAO;
+        this.redisDAO = redisDAO;
     }
 }

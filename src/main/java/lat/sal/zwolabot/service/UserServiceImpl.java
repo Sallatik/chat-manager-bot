@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void addUser(User user) {
 
+        errorService.requireRegistrationOpen();
         errorService.requireNull(userDAO.getUser(user.getId()));
         AccessLevel accessLevel = accessLevelDAO.getAccessLevel(defaultAccessLevel);
         errorService.requireNonNull(accessLevel);
