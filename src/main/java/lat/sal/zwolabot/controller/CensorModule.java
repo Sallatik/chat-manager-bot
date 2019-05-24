@@ -24,38 +24,29 @@ public class CensorModule {
 
     @MessageListener(filter = "/filter & text & ! reply")
     public void restrictWord(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
             String word = helper.getArgument(message.text(), "/filter".length());
             filterService.restrictWord(word);
-            helper.reply("Готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "Готово";
+        });
     }
 
     @MessageListener(filter = "/unfilter & text & ! reply")
     public void unrestrictWord(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
             String word = helper.getArgument(message.text(), "/unfilter".length());
             filterService.unrestrictWord(word);
-            helper.reply("Готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "Готово";
+        });
     }
 
     @MessageListener(filter = "/unfilter & reply")
     public void unrestrictSticker(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
             Sticker sticker = message.replyToMessage().sticker();
@@ -64,17 +55,13 @@ public class CensorModule {
                 throw new ZwolabotException("это не стикер");
 
             filterService.unrestrictSticker(sticker.fileId());
-            helper.reply("Готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "Готово";
+        });
     }
 
     @MessageListener(filter = "/packunfilter")
     public void unrestrictPack(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
 
@@ -94,17 +81,13 @@ public class CensorModule {
             }
 
             filterService.unrestrictPack(packName);
-            helper.reply("Готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "Готово";
+        });
     }
 
     @MessageListener(filter = "/filter & reply")
     public void restrictSticker(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
             Sticker sticker = message.replyToMessage().sticker();
@@ -113,17 +96,13 @@ public class CensorModule {
                 throw new ZwolabotException("это не стикер");
 
             filterService.restrictSticker(sticker.fileId());
-            helper.reply("Готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "Готово";
+        });
     }
 
     @MessageListener(filter = "/packfilter & reply")
     public void restrictPack(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
             Sticker sticker = message.replyToMessage().sticker();
@@ -132,51 +111,35 @@ public class CensorModule {
                 throw new ZwolabotException("это не стикер");
 
             filterService.restrictPack(sticker.setName());
-            helper.reply("Готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "Готово";
+        });
     }
 
     @MessageListener(filter = "/badwords")
     public void getRestrictedWords(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
-            helper.reply("Фильтруемые слова и фразы: \n" + filterService.getRestrictedWords(), message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
-
+            return "Фильтруемые слова и фразы: \n" + filterService.getRestrictedWords();
+        });
     }
 
     @MessageListener(filter = "/badpacks")
     public void getRestrictedPacks(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
-
             StringBuilder response = new StringBuilder("Фильтруемые cтикер паки: \n");
 
-            for (String packName : filterService.getRestrictedPacks()) {
+            for (String packName : filterService.getRestrictedPacks())
                 response.append("[" + packName + "](https://t.me/addstickers/" + packName + ") ");
-            }
-
-            helper.reply(response.toString(), message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return response.toString();
+        });
 
     }
 
     @MessageListener(filter = "/badstickers")
     public void getRestrictedStickers(Message message) {
-
         try {
 
             errorService.requireAdmin(message.from().id());
@@ -187,7 +150,6 @@ public class CensorModule {
         } catch (ZwolabotException e) {
             helper.reply(e.getMessage(), message);
         }
-
     }
 
     @MessageListener(filter = "supergroup & text & ! /filter & ! /unfilters")

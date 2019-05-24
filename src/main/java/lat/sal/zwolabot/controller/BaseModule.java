@@ -22,23 +22,19 @@ public class BaseModule {
 
     @MessageListener(filter = "/start & private")
     public void register(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             User user = new User(message.from());
             userService.addUser(user);
-            helper.reply("Добро пожаловать! Чтобы получить информацию о вашем уровне доступа, " +
-                    "а так же список доступных чатов, используйте команду /info", message);
+            return "Добро пожаловать! Чтобы получить информацию о вашем уровне доступа, " +
+                    "а так же список доступных чатов, используйте команду /info";
 
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+        });
     }
 
     @MessageListener(filter = "/info & private")
     public void getLevel(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             LevelAndChats levelAndChats = userService.getLevelAndAvailableChats(message.from().id());
             StringBuilder result = new StringBuilder("Ваш уровень доступа: *" +
@@ -50,129 +46,94 @@ public class BaseModule {
                 result.append("\n[" + chat.getTitle() + "]" +
                         "(" + chat.getInviteLink() + "): " + (chat.getDescription() == null ? "" : chat.getDescription()));
 
-            helper.reply(result.toString(), message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return result.toString();
+        });
     }
 
     @MessageListener(filter = "/addchat & text & supergroup")
     public void addChat(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
             String level = helper.getArgument(message.text(), "/addchat".length());
 
             chatService.addChat(message.chat().id(), level);
-            helper.reply("Готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "Готово";
+        });
     }
 
     @MessageListener(filter = "/update & supergroup")
     public void updateChat(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
             chatService.updateChat(message.chat().id());
-            helper.reply("Готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "Готово";
+        });
     }
 
     @MessageListener(filter = "/setlevel & text & reply")
     public void setUserLevel(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
             String level = helper.getArgument(message.text(), "/setlevel".length());
             userService.setUserAccessLevel(message.replyToMessage().from().id(), level);
-            helper.reply("Готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "Готово";
+        });
     }
 
     @MessageListener(filter = "/admin")
     public void setAdmin(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireRoot(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setAdmin(user.getId(), true);
-            helper.reply("Готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "Готово";
+        });
     }
 
     @MessageListener(filter = "/noadmin")
     public void setNoAdmin(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireRoot(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setAdmin(user.getId(), false);
-            helper.reply("Готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "Готово";
+        });
     }
 
     @MessageListener(filter = "/gban")
     public void gban(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setUserAccessLevel(user.getId(), "ban");
-            helper.reply("Готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "Готово";
+        });
     }
 
     @MessageListener(filter = "/close")
     public void close(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
             settingsService.setRegistrationOpen(false);
-            helper.reply("готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "готово";
+        });
     }
 
     @MessageListener(filter = "/open")
     public void open(Message message) {
-
-        try {
+        helper.respond(message, () -> {
 
             errorService.requireAdmin(message.from().id());
             settingsService.setRegistrationOpen(true);
-            helper.reply("готово", message);
-
-        } catch (ZwolabotException e) {
-            helper.reply(e.getMessage(), message);
-        }
+            return "готово";
+        });
     }
 
     @MessageListener(filter = "private | supergroup")

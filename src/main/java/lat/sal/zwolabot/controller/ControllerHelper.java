@@ -11,6 +11,8 @@ import lat.sal.zwolabot.telegram.TgSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Supplier;
+
 @Component
 public class ControllerHelper {
 
@@ -60,8 +62,19 @@ public class ControllerHelper {
         }
     }
 
+    public void respond(Message message, Supplier<String> handler) {
+        try {
+            reply(handler.get(), message);
+        } catch (ZwolabotException e) {
+            reply(e.getMessage(), message);
+        } catch (RuntimeException e) {
+            reply("Неизвестная ошибка!", message);
+        }
+    }
+
     @Autowired
     public ControllerHelper(TgSender tgSender, UserService userService) {
+
         this.tgSender = tgSender;
         this.userService = userService;
     }
