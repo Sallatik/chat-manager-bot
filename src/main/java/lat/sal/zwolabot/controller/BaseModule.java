@@ -80,7 +80,7 @@ public class BaseModule {
             String level = helper.getArgument(message.text(), "/setlevel".length());
             User user = new User(message.replyToMessage().from());
             userService.setUserAccessLevel(user.getId(), level);
-            return "Пользователю " + user.getFirstName() + " присвоен уровень доступа '" + level + "'";
+            return "Пользователю " + helper.userLink(user) + " присвоен уровень доступа '" + level + "'";
         });
     }
 
@@ -91,7 +91,7 @@ public class BaseModule {
             errorService.requireRoot(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setAdmin(user.getId(), true);
-            return "Пользователь " + user.getFirstName() + " наделён полномочиями админа";
+            return "Пользователь " + helper.userLink(user) + " наделён полномочиями админа";
         });
     }
 
@@ -102,7 +102,7 @@ public class BaseModule {
             errorService.requireRoot(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setAdmin(user.getId(), false);
-            return "Пользователь " + user.getFirstName() + " освобождён от полномочий админа";
+            return "Пользователь " + helper.userLink(user) + " освобождён от полномочий админа";
         });
     }
 
@@ -113,7 +113,7 @@ public class BaseModule {
             errorService.requireAdmin(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setUserAccessLevel(user.getId(), "ban");
-            return user.getFirstName() + " заблокирован во всех чатах";
+            return helper.userLink(user) + " заблокирован во всех чатах";
         });
     }
 
@@ -134,6 +134,35 @@ public class BaseModule {
             errorService.requireAdmin(message.from().id());
             settingsService.setRegistrationOpen(true);
             return "Регистрация новых пользователей возобновлена";
+        });
+    }
+
+    @MessageListener(filter = "/settings")
+    public void settings(Message message) {
+        helper.respond(message, () -> {
+
+            errorService.requireAdmin(message.from().id());
+            return settingsService.getSettings().toString();
+        });
+    }
+
+    @MessageListener(filter = "/guser")
+    public void getUserInfo(Message message) {
+        helper.respond(message, () -> {
+
+            errorService.requireAdmin(message.from().id());
+            User user = helper.getTargetUser(message);
+            user = userService.getUser(user.getId());
+            return user.toString();
+        });
+    }
+
+    @MessageListener(filter = "/chatinfo")
+    public void getChatInfo(Message message) {
+        helper.respond(message, () -> {
+
+            errorService.requireAdmin(message.from().id());
+            return chatService.getChat(message.chat().id()).toString();
         });
     }
 

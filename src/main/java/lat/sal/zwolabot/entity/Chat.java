@@ -82,4 +82,14 @@ public class Chat {
     }
 
     public Chat() {}
+
+    @Override
+    public String toString() {
+
+        return "*Чат:* _" + id + "_\n" +
+                "Название: " + title + "\n" +
+                "Описание: " + description + "\n" +
+                "Уровень доступа: " + accessLevel.getName() + "\n";
+                //"Ссылка: " + inviteLink;
+    }
 }

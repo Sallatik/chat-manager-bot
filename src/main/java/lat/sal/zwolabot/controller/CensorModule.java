@@ -81,7 +81,7 @@ public class CensorModule {
             }
 
             filterService.unrestrictPack(packName);
-            return "Стикерпак '" + packName + "' снова можно использовать!";
+            return "Стикерпак '" + helper.packLink(packName)+ "' снова можно использовать!";
         });
     }
 
@@ -111,7 +111,7 @@ public class CensorModule {
                 throw new ZwolabotException("это не стикер");
 
             filterService.restrictPack(sticker.setName());
-            return "Стикерпак '" + sticker.setName() + "' теперь под запретом";
+            return "Стикерпак '" + helper.packLink(sticker.setName()) + "' теперь под запретом";
         });
     }
 
@@ -132,7 +132,7 @@ public class CensorModule {
             StringBuilder response = new StringBuilder("Фильтруемые cтикер паки: \n");
 
             for (String packName : filterService.getRestrictedPacks())
-                response.append("[" + packName + "](https://t.me/addstickers/" + packName + ") ");
+                response.append(helper.packLink(packName));
             return response.toString();
         });
 

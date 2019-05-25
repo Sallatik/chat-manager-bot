@@ -24,7 +24,7 @@ public class ButlerModule {
             User user = helper.getTargetUser(message);
             String note = ""; // todo: fix
             chatService.ban(message.chat().id(), user.getId(), note);
-            return message.from().firstName() + " забанил(а) пользователя " + user.getFirstName()
+            return helper.userLink(new User(message.from())) + " забанил(а) пользователя " + helper.userLink(user)
                     + (note.equals("") ? "" : " по причине: _" + note + "_.") + "\nПомянем!";
         });
     }
@@ -36,7 +36,7 @@ public class ButlerModule {
             errorService.reqireAdminOrModerator(message.chat().id(), message.from().id());
             User user = helper.getTargetUser(message);
             chatService.unban(message.chat().id(), user.getId());
-            return message.from().firstName() + " разбанил(а) пользователя " + user.getFirstName();
+            return helper.userLink(new User(message.from())) + " разбанил(а) пользователя " + helper.userLink(user);
         });
     }
 
@@ -47,7 +47,7 @@ public class ButlerModule {
             errorService.requireAdmin(message.from().id());
             User user = helper.getTargetUser(message);
             chatService.setModerator(message.chat().id(), user.getId(), true);
-            return user.getFirstName() + " теперь модератор.";
+            return helper.userLink(user) + " теперь модератор.";
         });
     }
 
@@ -59,7 +59,7 @@ public class ButlerModule {
             errorService.requireAdmin(message.from().id());
             User user = helper.getTargetUser(message);
             chatService.setModerator(message.chat().id(), user.getId(), false);
-            return user.getFirstName() + " больше не модератор.";
+            return helper.userLink(user) + " больше не модератор.";
         });
     }
 
@@ -70,7 +70,7 @@ public class ButlerModule {
             errorService.reqireAdminOrModerator(message.chat().id(), message.from().id());
             User user = helper.getTargetUser(message);
             int warns = chatService.warn(message.chat().id(), user.getId());
-            return user.getFirstName() + " предупреждён: " + warns + "/3\n" +
+            return helper.userLink(user) + " предупреждён: " + warns + "/3\n" +
                     (warns == 3 ? "И забанен, собрав максимальное количество предупреждений. Помянем!" : "");
         });
     }
@@ -82,7 +82,17 @@ public class ButlerModule {
             errorService.reqireAdminOrModerator(message.chat().id(), message.from().id());
             User user = helper.getTargetUser(message);
             chatService.clearWarns(message.chat().id(), user.getId());
-            return "Рабу божию " + user.getFirstName() + " были отпущены все грехи. Аминь!";
+            return "Рабу божию " + helper.userLink(user) + " были отпущены все грехи. Аминь!";
+        });
+    }
+
+    @MessageListener(filter = "/user & supergroup")
+    public void getUserInfo(Message message) {
+        helper.respond(message, () -> {
+
+            errorService.reqireAdminOrModerator(message.chat().id(), message.from().id());
+            User user = helper.getTargetUser(message);
+            return chatService.getChatUser(message.chat().id(), user.getId()).toString();
         });
     }
 

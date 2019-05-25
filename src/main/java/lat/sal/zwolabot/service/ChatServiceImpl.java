@@ -139,6 +139,22 @@ public class ChatServiceImpl implements ChatService {
         chatUser.setWarns(0);
     }
 
+    @Override
+    @Transactional
+    public ChatUser getChatUser(long chatId, long userId) {
+
+        return getOrCreateChatUser(chatId, userId);
+    }
+
+    @Override
+    @Transactional
+    public Chat getChat(long id) {
+
+        Chat chat = chatDAO.getChat(id);
+        errorService.requireNonNull(chat);
+        return chat;
+    }
+
     @Autowired
     public ChatServiceImpl(ChatDAO chatDAO, UserDAO userDAO, AccessLevelDAO accessLevelDAO, ErrorService errorService, TelegramFacade telegramFacade, ChatUserDAO chatUserDAO) {
         this.chatDAO = chatDAO;

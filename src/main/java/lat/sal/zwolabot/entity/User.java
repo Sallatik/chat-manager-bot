@@ -94,4 +94,15 @@ public class User {
     }
 
     public User() {}
+
+    @Override
+    public String toString() {
+
+        return "*Пользователь:* _" + id + "_\n" +
+                "Имя: " + firstName + "\n" +
+                "Фамилия: " + lastName + "\n" +
+                "Ник: @" + username + "\n" +
+                "Уровень доступа: " + accessLevel.getName() + "\n" +
+                "Админ: " + (status.isAdmin() ? "да" : "нет");
+    }
 }

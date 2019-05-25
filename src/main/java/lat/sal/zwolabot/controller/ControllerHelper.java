@@ -76,6 +76,21 @@ public class ControllerHelper {
         }
     }
 
+    public String userLink(User user) {
+
+        String username = user.getUsername();
+        String firstName = user.getFirstName();
+
+        if (username != null)
+            return "[" + firstName + "](https://t.me/" + username + ")";
+        else
+            return firstName;
+    }
+
+    public String packLink(String packName) {
+        return "[" + packName + "](https://t.me/addstickers/" + packName + ") ";
+    }
+
     @Autowired
     public ControllerHelper(TgSender tgSender, UserService userService) {
 

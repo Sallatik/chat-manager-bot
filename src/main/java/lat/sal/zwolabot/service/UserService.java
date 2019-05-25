@@ -14,4 +14,6 @@ public interface UserService {
     LevelAndChats getLevelAndAvailableChats(long id);
 
     User getUserByUsername(String username);
+
+    User getUser(long id);
 }

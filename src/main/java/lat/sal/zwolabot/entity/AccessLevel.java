@@ -37,6 +37,5 @@ public class AccessLevel {
         this.value = value;
     }
 
-
     public AccessLevel() {}
 }

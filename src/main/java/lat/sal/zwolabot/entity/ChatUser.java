@@ -98,6 +98,15 @@ public class ChatUser {
         this.chatUserId = new ChatUserId(chatId, userId);
     }
 
+    @Override
+    public String toString() {
+
+        return "*Пользователь:* _" + chatUserId.getUserId() + "_\n" +
+                "Предупреждений: " + warns + "\n" +
+                "Последнее сообщение: " + (lastMessageDate != null ? lastMessageDate : "никогда") + "\n" +
+                "Забанен: " + (banned ? "да" : "нет");
+    }
+
     public ChatUser(Chat chat, User user) {
 
         this.chatUserId = new ChatUserId(chat.getId(), user.getId());

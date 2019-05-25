@@ -103,6 +103,15 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
+    @Transactional
+    public User getUser(long id) {
+
+        User user = userDAO.getUser(id);
+        errorService.requireNonNull(user);
+        return user;
+    }
+
     @Autowired
     public UserServiceImpl(UserDAO userDAO, AccessLevelDAO accessLevelDAO, ChatDAO chatDAO, ErrorService errorService, TelegramFacade telegramFacade) {
         this.userDAO = userDAO;

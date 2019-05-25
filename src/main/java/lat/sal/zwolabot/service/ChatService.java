@@ -1,6 +1,7 @@
 package lat.sal.zwolabot.service;
 
 import lat.sal.zwolabot.entity.Chat;
+import lat.sal.zwolabot.entity.ChatUser;
 
 import java.util.Date;
 
@@ -23,4 +24,8 @@ public interface ChatService {
     void unban(long chatId, long userId);
 
     void clearWarns(long chatId, long userId);
+
+    ChatUser getChatUser(long chatId, long userId);
+
+    Chat getChat(long id);
 }

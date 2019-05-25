@@ -20,4 +20,10 @@ public class Settings {
     }
 
     public Settings() { }
+
+    @Override
+    public String toString() {
+        return "*Текущие настройки:* \n" +
+                "Регистрация: " + (registrationOpen ? "открыта" : "закрыта");
+    }
 }
