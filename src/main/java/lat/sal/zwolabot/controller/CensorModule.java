@@ -29,7 +29,7 @@ public class CensorModule {
             errorService.requireAdmin(message.from().id());
             String word = helper.getArgument(message.text(), "/filter".length());
             filterService.restrictWord(word);
-            return "Готово";
+            return "Говорить '" + word + "' отныне запрещено во всех чатах системы";
         });
     }
 
@@ -40,7 +40,7 @@ public class CensorModule {
             errorService.requireAdmin(message.from().id());
             String word = helper.getArgument(message.text(), "/unfilter".length());
             filterService.unrestrictWord(word);
-            return "Готово";
+            return "Теперь можно говорить '" + word + "'!";
         });
     }
 
@@ -55,7 +55,7 @@ public class CensorModule {
                 throw new ZwolabotException("это не стикер");
 
             filterService.unrestrictSticker(sticker.fileId());
-            return "Готово";
+            return "Этот стикер больше не под запретом!";
         });
     }
 
@@ -81,7 +81,7 @@ public class CensorModule {
             }
 
             filterService.unrestrictPack(packName);
-            return "Готово";
+            return "Стикерпак '" + packName + "' снова можно использовать!";
         });
     }
 
@@ -96,7 +96,7 @@ public class CensorModule {
                 throw new ZwolabotException("это не стикер");
 
             filterService.restrictSticker(sticker.fileId());
-            return "Готово";
+            return "Этот стикер теперь под запретом";
         });
     }
 
@@ -111,7 +111,7 @@ public class CensorModule {
                 throw new ZwolabotException("это не стикер");
 
             filterService.restrictPack(sticker.setName());
-            return "Готово";
+            return "Стикерпак '" + sticker.setName() + "' теперь под запретом";
         });
     }
 

@@ -58,7 +58,7 @@ public class BaseModule {
             String level = helper.getArgument(message.text(), "/addchat".length());
 
             chatService.addChat(message.chat().id(), level);
-            return "Готово";
+            return "Чат успешно добавлен в систему с уровнем доступа '" + level + "'";
         });
     }
 
@@ -68,7 +68,7 @@ public class BaseModule {
 
             errorService.requireAdmin(message.from().id());
             chatService.updateChat(message.chat().id());
-            return "Готово";
+            return "Информация о чате успешно обновлена";
         });
     }
 
@@ -78,8 +78,9 @@ public class BaseModule {
 
             errorService.requireAdmin(message.from().id());
             String level = helper.getArgument(message.text(), "/setlevel".length());
-            userService.setUserAccessLevel(message.replyToMessage().from().id(), level);
-            return "Готово";
+            User user = new User(message.replyToMessage().from());
+            userService.setUserAccessLevel(user.getId(), level);
+            return "Пользователю " + user.getFirstName() + " присвоен уровень доступа '" + level + "'";
         });
     }
 
@@ -90,7 +91,7 @@ public class BaseModule {
             errorService.requireRoot(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setAdmin(user.getId(), true);
-            return "Готово";
+            return "Пользователь " + user.getFirstName() + " наделён полномочиями админа";
         });
     }
 
@@ -101,7 +102,7 @@ public class BaseModule {
             errorService.requireRoot(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setAdmin(user.getId(), false);
-            return "Готово";
+            return "Пользователь " + user.getFirstName() + " освобождён от полномочий админа";
         });
     }
 
@@ -112,7 +113,7 @@ public class BaseModule {
             errorService.requireAdmin(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setUserAccessLevel(user.getId(), "ban");
-            return "Готово";
+            return user.getFirstName() + " заблокирован во всех чатах";
         });
     }
 
@@ -122,7 +123,7 @@ public class BaseModule {
 
             errorService.requireAdmin(message.from().id());
             settingsService.setRegistrationOpen(false);
-            return "готово";
+            return "Регистрация новых пользователей временно приостановлена";
         });
     }
 
@@ -132,7 +133,7 @@ public class BaseModule {
 
             errorService.requireAdmin(message.from().id());
             settingsService.setRegistrationOpen(true);
-            return "готово";
+            return "Регистрация новых пользователей возобновлена";
         });
     }
 
