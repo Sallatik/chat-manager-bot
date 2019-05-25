@@ -23,7 +23,7 @@ public class FilterServiceImpl implements FilterService {
 
             if (text.contains(word)) {
                 illegal = true;
-                text = text.replace(word, "%жидовское слово%");
+                text = text.replace(word, "*{жидовское слово}*");
             }
         }
 

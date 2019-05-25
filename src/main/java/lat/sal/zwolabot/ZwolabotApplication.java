@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 public class ZwolabotApplication implements CommandLineRunner {
 
 	private Jelebot jelebot;
-
 	private Logger logger = Logger.getLogger(ZwolabotApplication.class.getName());
 
 	public static void main(String[] args) {

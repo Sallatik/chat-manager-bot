@@ -1,8 +1,11 @@
 package lat.sal.zwolabot.service;
 
 import lat.sal.zwolabot.dao.SettingsDAO;
+import lat.sal.zwolabot.entity.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Service
 public class SettingsServiceImpl implements SettingsService {
@@ -10,9 +13,29 @@ public class SettingsServiceImpl implements SettingsService {
     private SettingsDAO settingsDAO;
 
     @Override
+    @Transactional
+    public Settings getSettings() {
+        return getOrCreateSettings();
+    }
+
+    @Override
+    @Transactional
     public void setRegistrationOpen(boolean registrationOpen) {
 
-        settingsDAO.setRegistrationOpen(registrationOpen);
+        Settings settings = getOrCreateSettings();
+        settings.setRegistrationOpen(registrationOpen);
+    }
+
+    private Settings getOrCreateSettings() {
+
+        Settings settings = settingsDAO.getSettings();
+
+        if (settings == null) {
+            settings = new Settings();
+            settingsDAO.saveSettings(settings);
+        }
+
+        return settings;
     }
 
     @Autowired

@@ -12,12 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Component
 public class ControllerHelper {
 
     private TgSender tgSender;
     private UserService userService;
+    private Logger logger = Logger.getLogger(ControllerHelper.class.getName());
 
     public String getArgument(String text, int offset) {
         return text.trim().substring(offset).trim();
@@ -68,6 +71,7 @@ public class ControllerHelper {
         } catch (ZwolabotException e) {
             reply(e.getMessage(), message);
         } catch (RuntimeException e) {
+            logger.log(Level.WARNING, "unknown exception", e);
             reply("Неизвестная ошибка!", message);
         }
     }

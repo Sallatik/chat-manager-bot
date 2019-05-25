@@ -17,7 +17,7 @@ public class ErrorServiceImpl implements ErrorService {
 
     private ChatUserDAO chatUserDAO;
     private UserDAO userDAO;
-    private SettingsDAO settingsDAO;
+    private SettingsService settingsService;
 
     @Override
     public void requireNonNull(User user) {
@@ -78,7 +78,7 @@ public class ErrorServiceImpl implements ErrorService {
     @Override
     public void requireRegistrationOpen() {
 
-        if (!settingsDAO.isRegistrationOpen())
+        if (!settingsService.getSettings().isRegistrationOpen())
             throw new ZwolabotException("Регистрация новых пользователей временно закрыта.\n" +
                     "Попробуйте позже.");
     }
@@ -101,9 +101,9 @@ public class ErrorServiceImpl implements ErrorService {
     }
 
     @Autowired
-    public ErrorServiceImpl(ChatUserDAO chatUserDAO, UserDAO userDAO, SettingsDAO settingsDAO) {
+    public ErrorServiceImpl(ChatUserDAO chatUserDAO, UserDAO userDAO, SettingsService settingsService) {
         this.chatUserDAO = chatUserDAO;
         this.userDAO = userDAO;
-        this.settingsDAO = settingsDAO;
+        this.settingsService = settingsService;
     }
 }

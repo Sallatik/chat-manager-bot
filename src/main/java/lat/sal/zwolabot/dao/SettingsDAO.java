@@ -1,8 +1,10 @@
 package lat.sal.zwolabot.dao;
 
+import lat.sal.zwolabot.entity.Settings;
+
 public interface SettingsDAO {
 
-    boolean isRegistrationOpen();
+    Settings getSettings();
 
-    void setRegistrationOpen(boolean registrationOpen);
+    void saveSettings(Settings settings);
 }

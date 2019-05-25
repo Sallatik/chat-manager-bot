@@ -1,45 +1,34 @@
 package lat.sal.zwolabot.dao;
 
+import lat.sal.zwolabot.entity.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.swing.text.html.parser.Entity;
 
 @Repository
 public class SettingsDAOImpl implements SettingsDAO {
 
-    private Jedis jedis;
-
-    @Value("${zwolabot.registration-open-key:registration}")
-    private String registrationOpenKey;
-
-    private boolean registrationOpen;
+    private EntityManager entityManager;
 
     @Override
-    public boolean isRegistrationOpen() {
-        return registrationOpen;
+    public Settings getSettings() {
+
+        return entityManager.find(Settings.class, 1);
     }
 
     @Override
-    public void setRegistrationOpen(boolean registrationOpen) {
+    public void saveSettings(Settings settings) {
 
-        jedis.set(registrationOpenKey, String.valueOf(registrationOpen));
-        this.registrationOpen = registrationOpen;
-    }
-
-    @PostConstruct
-    public void init() {
-
-        String registrationOpenString = jedis.get(registrationOpenKey);
-
-        if (registrationOpenString != null)
-            registrationOpen = Boolean.parseBoolean(registrationOpenString);
+        entityManager.merge(settings);
     }
 
     @Autowired
-    public SettingsDAOImpl(Jedis jedis) {
-        this.jedis = jedis;
+    public SettingsDAOImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 }
