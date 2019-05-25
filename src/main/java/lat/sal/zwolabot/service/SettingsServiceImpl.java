@@ -1,22 +1,22 @@
 package lat.sal.zwolabot.service;
 
-import lat.sal.zwolabot.dao.RedisDAO;
+import lat.sal.zwolabot.dao.SettingsDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SettingsServiceImpl implements SettingsService {
 
-    private RedisDAO redisDAO;
+    private SettingsDAO settingsDAO;
 
     @Override
     public void setRegistrationOpen(boolean registrationOpen) {
 
-        redisDAO.setRegistrationOpen(registrationOpen);
+        settingsDAO.setRegistrationOpen(registrationOpen);
     }
 
     @Autowired
-    public SettingsServiceImpl(RedisDAO redisDAO) {
-        this.redisDAO = redisDAO;
+    public SettingsServiceImpl(SettingsDAO settingsDAO) {
+        this.settingsDAO = settingsDAO;
     }
 }

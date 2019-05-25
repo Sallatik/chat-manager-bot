@@ -2,14 +2,14 @@ package lat.sal.zwolabot.service;
 
 import lat.sal.zwolabot.ZwolabotException;
 import lat.sal.zwolabot.dao.ChatUserDAO;
-import lat.sal.zwolabot.dao.RedisDAO;
+import lat.sal.zwolabot.dao.FilterDAO;
+import lat.sal.zwolabot.dao.SettingsDAO;
 import lat.sal.zwolabot.dao.UserDAO;
 import lat.sal.zwolabot.entity.AccessLevel;
 import lat.sal.zwolabot.entity.Chat;
 import lat.sal.zwolabot.entity.ChatUser;
 import lat.sal.zwolabot.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,7 +17,7 @@ public class ErrorServiceImpl implements ErrorService {
 
     private ChatUserDAO chatUserDAO;
     private UserDAO userDAO;
-    private RedisDAO redisDAO;
+    private SettingsDAO settingsDAO;
 
     @Override
     public void requireNonNull(User user) {
@@ -78,7 +78,7 @@ public class ErrorServiceImpl implements ErrorService {
     @Override
     public void requireRegistrationOpen() {
 
-        if (!redisDAO.isRegistrationOpen())
+        if (!settingsDAO.isRegistrationOpen())
             throw new ZwolabotException("Регистрация новых пользователей временно закрыта.\n" +
                     "Попробуйте позже.");
     }
@@ -101,10 +101,9 @@ public class ErrorServiceImpl implements ErrorService {
     }
 
     @Autowired
-
-    public ErrorServiceImpl(ChatUserDAO chatUserDAO, UserDAO userDAO, RedisDAO redisDAO) {
+    public ErrorServiceImpl(ChatUserDAO chatUserDAO, UserDAO userDAO, SettingsDAO settingsDAO) {
         this.chatUserDAO = chatUserDAO;
         this.userDAO = userDAO;
-        this.redisDAO = redisDAO;
+        this.settingsDAO = settingsDAO;
     }
 }

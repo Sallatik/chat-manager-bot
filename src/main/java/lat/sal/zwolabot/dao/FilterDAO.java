@@ -2,7 +2,7 @@ package lat.sal.zwolabot.dao;
 
 import java.util.Set;
 
-public interface RedisDAO {
+public interface FilterDAO {
 
     Set<String> getRestrictedWords();
 
@@ -21,8 +21,4 @@ public interface RedisDAO {
     void removeRestrictedSticker(String stickerId);
 
     void removeRestrictedPack(String packName);
-
-    boolean isRegistrationOpen();
-
-    void setRegistrationOpen(boolean registrationOpen);
 }
