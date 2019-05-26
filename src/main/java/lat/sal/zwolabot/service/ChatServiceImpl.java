@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Date;
 
 @Service
 public class ChatServiceImpl implements ChatService {
@@ -21,7 +20,7 @@ public class ChatServiceImpl implements ChatService {
     private ChatDAO chatDAO;
     private UserDAO userDAO;
     private AccessLevelDAO accessLevelDAO;
-    private ErrorService errorService;
+    private ErrorManager errorManager;
     private TelegramFacade telegramFacade;
     private ChatUserDAO chatUserDAO;
 
@@ -29,9 +28,9 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     public void addChat(long id, String level) {
 
-        errorService.requireNull(chatDAO.getChat(id));
+        errorManager.requireNull(chatDAO.getChat(id));
         AccessLevel accessLevel = accessLevelDAO.getAccessLevel(level);
-        errorService.requireNonNull(accessLevel);
+        errorManager.requireNonNull(accessLevel);
 
         Chat chat = telegramFacade.getChat(id);
         chat.setAccessLevel(accessLevel);
@@ -45,7 +44,7 @@ public class ChatServiceImpl implements ChatService {
 
         Chat chat = telegramFacade.getChat(id);
         Chat persistent = chatDAO.getChat(id);
-        errorService.requireNonNull(persistent);
+        errorManager.requireNonNull(persistent);
         persistent.update(chat);
     }
 
@@ -73,8 +72,8 @@ public class ChatServiceImpl implements ChatService {
         Chat chat = chatDAO.getChat(chatId);
         User user = userDAO.getUser(userId);
 
-        errorService.requireNonNull(chat);
-        errorService.requireNonNull(user);
+        errorManager.requireNonNull(chat);
+        errorManager.requireNonNull(user);
         return getOrCreateChatUser(chat, user);
     }
 
@@ -151,16 +150,16 @@ public class ChatServiceImpl implements ChatService {
     public Chat getChat(long id) {
 
         Chat chat = chatDAO.getChat(id);
-        errorService.requireNonNull(chat);
+        errorManager.requireNonNull(chat);
         return chat;
     }
 
     @Autowired
-    public ChatServiceImpl(ChatDAO chatDAO, UserDAO userDAO, AccessLevelDAO accessLevelDAO, ErrorService errorService, TelegramFacade telegramFacade, ChatUserDAO chatUserDAO) {
+    public ChatServiceImpl(ChatDAO chatDAO, UserDAO userDAO, AccessLevelDAO accessLevelDAO, ErrorManager errorManager, TelegramFacade telegramFacade, ChatUserDAO chatUserDAO) {
         this.chatDAO = chatDAO;
         this.userDAO = userDAO;
         this.accessLevelDAO = accessLevelDAO;
-        this.errorService = errorService;
+        this.errorManager = errorManager;
         this.telegramFacade = telegramFacade;
         this.chatUserDAO = chatUserDAO;
     }

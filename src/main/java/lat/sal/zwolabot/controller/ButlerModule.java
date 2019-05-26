@@ -1,10 +1,10 @@
 package lat.sal.zwolabot.controller;
 
 import com.pengrad.telegrambot.model.Message;
-import lat.sal.zwolabot.ZwolabotException;
 import lat.sal.zwolabot.entity.User;
 import lat.sal.zwolabot.service.ChatService;
-import lat.sal.zwolabot.service.ErrorService;
+import lat.sal.zwolabot.service.ErrorManager;
+import lat.sal.zwolabot.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sallat.jelebot.annotation.listeners.MessageListener;
@@ -12,7 +12,7 @@ import sallat.jelebot.annotation.listeners.MessageListener;
 @Component
 public class ButlerModule {
 
-    private ErrorService errorService;
+    private SecurityService securityService;
     private ControllerHelper helper;
     private ChatService chatService;
 
@@ -20,7 +20,7 @@ public class ButlerModule {
     public void ban(Message message) {
         helper.respond(message, () -> {
 
-            errorService.reqireAdminOrModerator(message.chat().id(), message.from().id());
+            securityService.requireModerator(message.chat().id(), message.from().id());
             User user = helper.getTargetUser(message);
             String note = ""; // todo: fix
             chatService.ban(message.chat().id(), user.getId(), note);
@@ -33,7 +33,7 @@ public class ButlerModule {
     public void unban(Message message) {
         helper.respond(message, () -> {
 
-            errorService.reqireAdminOrModerator(message.chat().id(), message.from().id());
+            securityService.requireModerator(message.chat().id(), message.from().id());
             User user = helper.getTargetUser(message);
             chatService.unban(message.chat().id(), user.getId());
             return helper.userLink(new User(message.from())) + " разбанил(а) пользователя " + helper.userLink(user);
@@ -44,7 +44,7 @@ public class ButlerModule {
     public void promote(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             User user = helper.getTargetUser(message);
             chatService.setModerator(message.chat().id(), user.getId(), true);
             return helper.userLink(user) + " теперь модератор.";
@@ -56,7 +56,7 @@ public class ButlerModule {
     public void demote(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             User user = helper.getTargetUser(message);
             chatService.setModerator(message.chat().id(), user.getId(), false);
             return helper.userLink(user) + " больше не модератор.";
@@ -67,7 +67,7 @@ public class ButlerModule {
     public void warn(Message message) {
         helper.respond(message, () -> {
 
-            errorService.reqireAdminOrModerator(message.chat().id(), message.from().id());
+            securityService.requireModerator(message.chat().id(), message.from().id());
             User user = helper.getTargetUser(message);
             int warns = chatService.warn(message.chat().id(), user.getId());
             return helper.userLink(user) + " предупреждён: " + warns + "/3\n" +
@@ -79,7 +79,7 @@ public class ButlerModule {
     public void clearWarns(Message message) {
         helper.respond(message, () -> {
 
-            errorService.reqireAdminOrModerator(message.chat().id(), message.from().id());
+            securityService.requireModerator(message.chat().id(), message.from().id());
             User user = helper.getTargetUser(message);
             chatService.clearWarns(message.chat().id(), user.getId());
             return "Рабу божию " + helper.userLink(user) + " были отпущены все грехи. Аминь!";
@@ -90,15 +90,15 @@ public class ButlerModule {
     public void getUserInfo(Message message) {
         helper.respond(message, () -> {
 
-            errorService.reqireAdminOrModerator(message.chat().id(), message.from().id());
+            securityService.requireModerator(message.chat().id(), message.from().id());
             User user = helper.getTargetUser(message);
             return chatService.getChatUser(message.chat().id(), user.getId()).toString();
         });
     }
 
     @Autowired
-    public ButlerModule(ErrorService errorService, ControllerHelper helper, ChatService chatService) {
-        this.errorService = errorService;
+    public ButlerModule(SecurityService securityService, ControllerHelper helper, ChatService chatService) {
+        this.securityService = securityService;
         this.helper = helper;
         this.chatService = chatService;
     }

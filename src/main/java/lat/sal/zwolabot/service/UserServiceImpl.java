@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
     private AccessLevelDAO accessLevelDAO;
     private ChatDAO chatDAO;
-    private ErrorService errorService;
+    private ErrorManager errorManager;
     private TelegramFacade telegramFacade;
 
     @Value("${zwolabot.default-access-level}")
@@ -31,10 +31,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void addUser(User user) {
 
-        errorService.requireRegistrationOpen();
-        errorService.requireNull(userDAO.getUser(user.getId()));
+        errorManager.requireRegistrationOpen();
+        errorManager.requireNull(userDAO.getUser(user.getId()));
         AccessLevel accessLevel = accessLevelDAO.getAccessLevel(defaultAccessLevel);
-        errorService.requireNonNull(accessLevel);
+        errorManager.requireNonNull(accessLevel);
 
         user.setAccessLevel(accessLevel);
         userDAO.saveUser(user);
@@ -57,8 +57,8 @@ public class UserServiceImpl implements UserService {
         User user = userDAO.getUser(id);
         AccessLevel accessLevel = accessLevelDAO.getAccessLevel(level);
 
-        errorService.requireNonNull(user);
-        errorService.requireNonNull(accessLevel);
+        errorManager.requireNonNull(user);
+        errorManager.requireNonNull(accessLevel);
 
         user.setAccessLevel(accessLevel);
 
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     public void setAdmin(long id, boolean admin) {
 
         User user = userDAO.getUser(id);
-        errorService.requireNonNull(user);
+        errorManager.requireNonNull(user);
 
         user.getStatus().setAdmin(admin);
     }
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
     public LevelAndChats getLevelAndAvailableChats(long id) {
 
         User user = userDAO.getUser(id);
-        errorService.requireNonNull(user);
+        errorManager.requireNonNull(user);
 
         AccessLevel level = user.getAccessLevel();
         List<Chat> chats = chatDAO.getAllChats()
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
     public User getUserByUsername(String username) {
 
         User user = userDAO.getUserByUsername(username);
-        errorService.requireNonNull(user);
+        errorManager.requireNonNull(user);
         return user;
     }
 
@@ -108,16 +108,16 @@ public class UserServiceImpl implements UserService {
     public User getUser(long id) {
 
         User user = userDAO.getUser(id);
-        errorService.requireNonNull(user);
+        errorManager.requireNonNull(user);
         return user;
     }
 
     @Autowired
-    public UserServiceImpl(UserDAO userDAO, AccessLevelDAO accessLevelDAO, ChatDAO chatDAO, ErrorService errorService, TelegramFacade telegramFacade) {
+    public UserServiceImpl(UserDAO userDAO, AccessLevelDAO accessLevelDAO, ChatDAO chatDAO, ErrorManager errorManager, TelegramFacade telegramFacade) {
         this.userDAO = userDAO;
         this.accessLevelDAO = accessLevelDAO;
         this.chatDAO = chatDAO;
-        this.errorService = errorService;
+        this.errorManager = errorManager;
         this.telegramFacade = telegramFacade;
     }
 }

@@ -4,7 +4,7 @@ import lat.sal.zwolabot.entity.AccessLevel;
 import lat.sal.zwolabot.entity.Chat;
 import lat.sal.zwolabot.entity.User;
 
-public interface ErrorService {
+public interface ErrorManager {
 
     void requireNonNull(User user);
 
@@ -15,12 +15,6 @@ public interface ErrorService {
     void requireNull(User user);
 
     void requireNull(Chat chat);
-
-    void requireRoot(long id);
-
-    void requireAdmin(long id);
-
-    void reqireAdminOrModerator(long chatId, long userId);
 
     void requireRegistrationOpen();
 }

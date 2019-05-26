@@ -1,7 +1,6 @@
 package lat.sal.zwolabot.controller;
 
 import com.pengrad.telegrambot.model.Message;
-import lat.sal.zwolabot.ZwolabotException;
 import lat.sal.zwolabot.entity.Chat;
 import lat.sal.zwolabot.entity.User;
 import lat.sal.zwolabot.service.*;
@@ -9,14 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sallat.jelebot.annotation.listeners.MessageListener;
 
-import java.util.Date;
-
 @Component
 public class BaseModule {
 
     private UserService userService;
     private ChatService chatService;
-    private ErrorService errorService;
+    private SecurityService securityService;
     private SettingsService settingsService;
     private ControllerHelper helper;
 
@@ -54,7 +51,7 @@ public class BaseModule {
     public void addChat(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             String level = helper.getArgument(message.text(), "/addchat".length());
 
             chatService.addChat(message.chat().id(), level);
@@ -66,7 +63,7 @@ public class BaseModule {
     public void updateChat(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             chatService.updateChat(message.chat().id());
             return "Информация о чате успешно обновлена";
         });
@@ -76,7 +73,7 @@ public class BaseModule {
     public void setUserLevel(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             String level = helper.getArgument(message.text(), "/setlevel".length());
             User user = new User(message.replyToMessage().from());
             userService.setUserAccessLevel(user.getId(), level);
@@ -88,7 +85,7 @@ public class BaseModule {
     public void setAdmin(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireRoot(message.from().id());
+            securityService.requireRootAdmin(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setAdmin(user.getId(), true);
             return "Пользователь " + helper.userLink(user) + " наделён полномочиями админа";
@@ -99,7 +96,7 @@ public class BaseModule {
     public void setNoAdmin(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireRoot(message.from().id());
+            securityService.requireRootAdmin(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setAdmin(user.getId(), false);
             return "Пользователь " + helper.userLink(user) + " освобождён от полномочий админа";
@@ -110,7 +107,7 @@ public class BaseModule {
     public void gban(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             User user = helper.getTargetUser(message);
             userService.setUserAccessLevel(user.getId(), "ban");
             return helper.userLink(user) + " заблокирован во всех чатах";
@@ -121,7 +118,7 @@ public class BaseModule {
     public void close(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             settingsService.setRegistrationOpen(false);
             return "Регистрация новых пользователей временно приостановлена";
         });
@@ -131,7 +128,7 @@ public class BaseModule {
     public void open(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             settingsService.setRegistrationOpen(true);
             return "Регистрация новых пользователей возобновлена";
         });
@@ -141,7 +138,7 @@ public class BaseModule {
     public void settings(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             return settingsService.getSettings().toString();
         });
     }
@@ -150,7 +147,7 @@ public class BaseModule {
     public void getUserInfo(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             User user = helper.getTargetUser(message);
             user = userService.getUser(user.getId());
             return user.toString();
@@ -161,7 +158,7 @@ public class BaseModule {
     public void getChatInfo(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             return chatService.getChat(message.chat().id()).toString();
         });
     }
@@ -199,10 +196,10 @@ public class BaseModule {
     }
 
     @Autowired
-    public BaseModule(UserService userService, ChatService chatService, ErrorService errorService, SettingsService settingsService, ControllerHelper helper) {
+    public BaseModule(UserService userService, ChatService chatService, SecurityService securityService, SettingsService settingsService, ControllerHelper helper) {
         this.userService = userService;
         this.chatService = chatService;
-        this.errorService = errorService;
+        this.securityService = securityService;
         this.settingsService = settingsService;
         this.helper = helper;
     }

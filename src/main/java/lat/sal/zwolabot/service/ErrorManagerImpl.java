@@ -1,22 +1,15 @@
 package lat.sal.zwolabot.service;
 
 import lat.sal.zwolabot.ZwolabotException;
-import lat.sal.zwolabot.dao.ChatUserDAO;
-import lat.sal.zwolabot.dao.FilterDAO;
-import lat.sal.zwolabot.dao.SettingsDAO;
-import lat.sal.zwolabot.dao.UserDAO;
 import lat.sal.zwolabot.entity.AccessLevel;
 import lat.sal.zwolabot.entity.Chat;
-import lat.sal.zwolabot.entity.ChatUser;
 import lat.sal.zwolabot.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
-public class ErrorServiceImpl implements ErrorService {
+@Component
+public class ErrorManagerImpl implements ErrorManager {
 
-    private ChatUserDAO chatUserDAO;
-    private UserDAO userDAO;
     private SettingsService settingsService;
 
     @Override
@@ -55,27 +48,6 @@ public class ErrorServiceImpl implements ErrorService {
     }
 
     @Override
-    public void requireRoot(long id) {
-
-        if (!(isAdmin(id) && isRoot(id)))
-            throw new ZwolabotException("Вы не главный админ.");
-    }
-
-    @Override
-    public void requireAdmin(long id) {
-
-        if (!isAdmin(id))
-            throw new ZwolabotException("Вы не админ");
-    }
-
-    @Override
-    public void reqireAdminOrModerator(long chatId, long userId) {
-
-        if (!(isAdmin(userId) || isModerator(chatId, userId)))
-            throw new ZwolabotException("Вы не модератор");
-    }
-
-    @Override
     public void requireRegistrationOpen() {
 
         if (!settingsService.getSettings().isRegistrationOpen())
@@ -83,27 +55,10 @@ public class ErrorServiceImpl implements ErrorService {
                     "Попробуйте позже.");
     }
 
-    private boolean isRoot(long id) {
 
-        return id == 209601261L;
-    }
-
-    private boolean isModerator(long chatId, long userId) {
-
-        ChatUser chatUser = chatUserDAO.getChatUser(chatId, userId);
-        return chatUser != null && chatUser.isModerator();
-    }
-
-    private boolean isAdmin(long id) {
-
-        User user = userDAO.getUser(id);
-        return user != null && user.getStatus().isAdmin();
-    }
 
     @Autowired
-    public ErrorServiceImpl(ChatUserDAO chatUserDAO, UserDAO userDAO, SettingsService settingsService) {
-        this.chatUserDAO = chatUserDAO;
-        this.userDAO = userDAO;
+    public ErrorManagerImpl(SettingsService settingsService) {
         this.settingsService = settingsService;
     }
 }

@@ -2,23 +2,17 @@ package lat.sal.zwolabot.controller;
 
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Sticker;
-import com.pengrad.telegrambot.request.SendSticker;
-import lat.sal.zwolabot.ZwolabotApplication;
 import lat.sal.zwolabot.ZwolabotException;
-import lat.sal.zwolabot.service.ErrorService;
 import lat.sal.zwolabot.service.FilterService;
+import lat.sal.zwolabot.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sallat.jelebot.annotation.listeners.MessageListener;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Component
 public class CensorModule {
 
-    private ErrorService errorService;
+    private SecurityService securityService;
     private FilterService filterService;
     private ControllerHelper helper;
 
@@ -26,7 +20,7 @@ public class CensorModule {
     public void restrictWord(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             String word = helper.getArgument(message.text(), "/filter".length());
             filterService.restrictWord(word);
             return "Говорить '" + word + "' отныне запрещено во всех чатах системы";
@@ -37,7 +31,7 @@ public class CensorModule {
     public void unrestrictWord(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             String word = helper.getArgument(message.text(), "/unfilter".length());
             filterService.unrestrictWord(word);
             return "Теперь можно говорить '" + word + "'!";
@@ -48,7 +42,7 @@ public class CensorModule {
     public void unrestrictSticker(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             Sticker sticker = message.replyToMessage().sticker();
 
             if (sticker == null)
@@ -63,7 +57,7 @@ public class CensorModule {
     public void unrestrictPack(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
 
             String packName;
 
@@ -89,7 +83,7 @@ public class CensorModule {
     public void restrictSticker(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             Sticker sticker = message.replyToMessage().sticker();
 
             if (sticker == null)
@@ -104,7 +98,7 @@ public class CensorModule {
     public void restrictPack(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             Sticker sticker = message.replyToMessage().sticker();
 
             if (sticker == null)
@@ -119,7 +113,7 @@ public class CensorModule {
     public void getRestrictedWords(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             return "Фильтруемые слова и фразы: \n" + filterService.getRestrictedWords();
         });
     }
@@ -128,7 +122,7 @@ public class CensorModule {
     public void getRestrictedPacks(Message message) {
         helper.respond(message, () -> {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
             StringBuilder response = new StringBuilder("Фильтруемые cтикер паки: \n");
 
             for (String packName : filterService.getRestrictedPacks())
@@ -142,7 +136,7 @@ public class CensorModule {
     public void getRestrictedStickers(Message message) {
         try {
 
-            errorService.requireAdmin(message.from().id());
+            securityService.requireAdmin(message.from().id());
 
             for (String fileId : filterService.getRestrictedStickers())
                 helper.stickerReply(fileId, message);
@@ -191,8 +185,8 @@ public class CensorModule {
     }
 
     @Autowired
-    public CensorModule(ErrorService errorService, FilterService filterService, ControllerHelper helper) {
-        this.errorService = errorService;
+    public CensorModule(SecurityService securityService, FilterService filterService, ControllerHelper helper) {
+        this.securityService = securityService;
         this.filterService = filterService;
         this.helper = helper;
     }
