@@ -2,6 +2,7 @@ package lat.sal.zwolabot.service;
 
 import lat.sal.zwolabot.dao.AccessLevelDAO;
 import lat.sal.zwolabot.dao.ChatDAO;
+import lat.sal.zwolabot.dao.SettingsDAO;
 import lat.sal.zwolabot.dao.UserDAO;
 import lat.sal.zwolabot.entity.AccessLevel;
 import lat.sal.zwolabot.entity.Chat;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private UserDAO userDAO;
     private AccessLevelDAO accessLevelDAO;
     private ChatDAO chatDAO;
+    private SettingsDAO settingsDAO;
     private ErrorManager errorManager;
     private TelegramFacade telegramFacade;
 
@@ -31,7 +33,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void addUser(User user) {
 
-        errorManager.requireRegistrationOpen();
+        errorManager.requireRegistrationOpen(settingsDAO.getSettings().isRegistrationOpen());
         errorManager.requireNull(userDAO.getUser(user.getId()));
         AccessLevel accessLevel = accessLevelDAO.getAccessLevel(defaultAccessLevel);
         errorManager.requireNonNull(accessLevel);
@@ -113,10 +115,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Autowired
-    public UserServiceImpl(UserDAO userDAO, AccessLevelDAO accessLevelDAO, ChatDAO chatDAO, ErrorManager errorManager, TelegramFacade telegramFacade) {
+    public UserServiceImpl(UserDAO userDAO, AccessLevelDAO accessLevelDAO, ChatDAO chatDAO, SettingsDAO settingsDAO, ErrorManager errorManager, TelegramFacade telegramFacade) {
         this.userDAO = userDAO;
         this.accessLevelDAO = accessLevelDAO;
         this.chatDAO = chatDAO;
+        this.settingsDAO = settingsDAO;
         this.errorManager = errorManager;
         this.telegramFacade = telegramFacade;
     }

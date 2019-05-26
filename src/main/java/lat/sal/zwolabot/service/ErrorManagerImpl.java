@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ErrorManagerImpl implements ErrorManager {
-
-    private SettingsService settingsService;
+class ErrorManagerImpl implements ErrorManager {
 
     @Override
     public void requireNonNull(User user) {
@@ -48,17 +46,10 @@ public class ErrorManagerImpl implements ErrorManager {
     }
 
     @Override
-    public void requireRegistrationOpen() {
+    public void requireRegistrationOpen(boolean registrationOpen) {
 
-        if (!settingsService.getSettings().isRegistrationOpen())
+        if (! registrationOpen)
             throw new ZwolabotException("Регистрация новых пользователей временно закрыта.\n" +
                     "Попробуйте позже.");
-    }
-
-
-
-    @Autowired
-    public ErrorManagerImpl(SettingsService settingsService) {
-        this.settingsService = settingsService;
     }
 }
