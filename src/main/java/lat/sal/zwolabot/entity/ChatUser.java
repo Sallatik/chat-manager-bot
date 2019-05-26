@@ -22,7 +22,7 @@ public class ChatUser {
     private User user;
 
     private int warns;
-    private Date lastMessageDate;
+    private long lastMessage;
     private boolean banned;
     private boolean moderator;
     private String note;
@@ -67,12 +67,12 @@ public class ChatUser {
         this.warns = warns;
     }
 
-    public Date getLastMessageDate() {
-        return lastMessageDate;
+    public long getLastMessage() {
+        return lastMessage;
     }
 
-    public void setLastMessageDate(Date lastMessageDate) {
-        this.lastMessageDate = lastMessageDate;
+    public void setLastMessage(long lastMessage) {
+        this.lastMessage = lastMessage;
     }
 
     public boolean isBanned() {
@@ -103,7 +103,7 @@ public class ChatUser {
 
         return "*Пользователь:* _" + chatUserId.getUserId() + "_\n" +
                 "Предупреждений: " + warns + "\n" +
-                "Последнее сообщение: " + (lastMessageDate != null ? lastMessageDate : "никогда") + "\n" +
+                "Последнее сообщение: " + (lastMessage != 0 ? new Date(lastMessage * 1000) : "никогда") + "\n" +
                 "Забанен: " + (banned ? "да" : "нет");
     }
 

@@ -181,7 +181,7 @@ public class BaseModule {
         chatService.onMessage(
                 message.chat().id(),
                 message.from().id(),
-                new Date(message.date())
+                message.date()
         );
     }
 
@@ -193,7 +193,7 @@ public class BaseModule {
                 chatService.onMessage(
                         message.chat().id(),
                         user.id(),
-                        new Date(message.date())
+                        message.date()
                 );
         }
     }

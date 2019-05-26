@@ -11,7 +11,7 @@ public interface ChatService {
 
     void updateChat(long id);
 
-    void onMessage(long chatId, long userId, Date date);
+    void onMessage(long chatId, long userId, long timestamp);
 
     // butler
 

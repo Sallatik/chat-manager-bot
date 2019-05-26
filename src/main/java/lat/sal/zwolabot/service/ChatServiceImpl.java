@@ -51,7 +51,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public void onMessage(long chatId, long userId, Date date) {
+    public void onMessage(long chatId, long userId, long timestamp) {
 
         Chat chat = chatDAO.getChat(chatId);
         User user = userDAO.getUser(userId);
@@ -65,7 +65,7 @@ public class ChatServiceImpl implements ChatService {
         }
 
         ChatUser chatUser = getOrCreateChatUser(chat, user);
-        chatUser.setLastMessageDate(date);
+        chatUser.setLastMessage(timestamp);
     }
 
     private ChatUser getOrCreateChatUser(long chatId, long userId) {
