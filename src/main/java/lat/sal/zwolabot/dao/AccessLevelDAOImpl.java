@@ -9,7 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 @Repository
-public class AccessLevelDAOImpl implements AccessLevelDAO {
+class AccessLevelDAOImpl implements AccessLevelDAO {
 
     private EntityManager entityManager;
 

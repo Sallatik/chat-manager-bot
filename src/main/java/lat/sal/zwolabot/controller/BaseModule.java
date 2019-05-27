@@ -1,6 +1,9 @@
 package lat.sal.zwolabot.controller;
 
 import com.pengrad.telegrambot.model.Message;
+import lat.sal.zwolabot.controller.annotation.Admin;
+import lat.sal.zwolabot.controller.annotation.Respond;
+import lat.sal.zwolabot.controller.annotation.Root;
 import lat.sal.zwolabot.entity.Chat;
 import lat.sal.zwolabot.entity.User;
 import lat.sal.zwolabot.service.*;
@@ -13,154 +16,153 @@ public class BaseModule {
 
     private UserService userService;
     private ChatService chatService;
-    private SecurityService securityService;
     private SettingsService settingsService;
     private ControllerHelper helper;
 
+    @Respond
     @MessageListener(filter = "/start & private")
     public void register(Message message) {
-        helper.respond(message, () -> {
 
-            User user = new User(message.from());
-            userService.addUser(user);
-            return "Добро пожаловать! Чтобы получить информацию о вашем уровне доступа, " +
-                    "а так же список доступных чатов, используйте команду /info";
-
-        });
+        User user = new User(message.from());
+        userService.addUser(user);
+        String response = "Добро пожаловать! Чтобы получить информацию о вашем уровне доступа, " +
+                "а так же список доступных чатов, используйте команду /info";
+        helper.reply(response, message);
     }
 
+    @Respond
     @MessageListener(filter = "/info & private")
     public void getLevel(Message message) {
-        helper.respond(message, () -> {
 
-            LevelAndChats levelAndChats = userService.getLevelAndAvailableChats(message.from().id());
-            StringBuilder result = new StringBuilder("Ваш уровень доступа: *" +
-                    levelAndChats.getLevel().getName() + "*\n" +
-                    levelAndChats.getLevel().getDescription() +
-                    "\n\nДоступные чаты:");
+        LevelAndChats levelAndChats = userService.getLevelAndAvailableChats(message.from().id());
+        StringBuilder result = new StringBuilder("Ваш уровень доступа: *" +
+                levelAndChats.getLevel().getName() + "*\n" +
+                levelAndChats.getLevel().getDescription() +
+                "\n\nДоступные чаты:");
 
-            for (Chat chat : levelAndChats.getChats())
-                result.append("\n[" + chat.getTitle() + "]" +
-                        "(" + chat.getInviteLink() + "): " + (chat.getDescription() == null ? "" : chat.getDescription()));
+        for (Chat chat : levelAndChats.getChats())
+            result.append("\n[" + chat.getTitle() + "]" +
+                    "(" + chat.getInviteLink() + "): " + (chat.getDescription() == null ? "" : chat.getDescription()));
 
-            return result.toString();
-        });
+        String response = result.toString();
+        helper.reply(response, message);
     }
 
+    @Admin
+    @Respond
     @MessageListener(filter = "/addchat & text & supergroup")
     public void addChat(Message message) {
-        helper.respond(message, () -> {
 
-            securityService.requireAdmin(message.from().id());
-            String level = helper.getArgument(message.text(), "/addchat".length());
+        String level = helper.getArgument(message.text(), "/addchat".length());
 
-            chatService.addChat(message.chat().id(), level);
-            return "Чат успешно добавлен в систему с уровнем доступа '" + level + "'";
-        });
+        chatService.addChat(message.chat().id(), level);
+        String response = "Чат успешно добавлен в систему с уровнем доступа '" + level + "'";
+        helper.reply(response, message);
     }
 
+    @Admin
+    @Respond
     @MessageListener(filter = "/update & supergroup")
     public void updateChat(Message message) {
-        helper.respond(message, () -> {
 
-            securityService.requireAdmin(message.from().id());
-            chatService.updateChat(message.chat().id());
-            return "Информация о чате успешно обновлена";
-        });
+        chatService.updateChat(message.chat().id());
+        String response = "Информация о чате успешно обновлена";
+        helper.reply(response, message);
     }
 
+    @Admin
+    @Respond
     @MessageListener(filter = "/setlevel & text & reply")
     public void setUserLevel(Message message) {
-        helper.respond(message, () -> {
 
-            securityService.requireAdmin(message.from().id());
-            String level = helper.getArgument(message.text(), "/setlevel".length());
-            User user = new User(message.replyToMessage().from());
-            userService.setUserAccessLevel(user.getId(), level);
-            return "Пользователю " + helper.userLink(user) + " присвоен уровень доступа '" + level + "'";
-        });
+        String level = helper.getArgument(message.text(), "/setlevel".length());
+        User user = new User(message.replyToMessage().from());
+        userService.setUserAccessLevel(user.getId(), level);
+        String response = "Пользователю " + helper.userLink(user) + " присвоен уровень доступа '" + level + "'";
+        helper.reply(response, message);
     }
 
+    @Root
+    @Respond
     @MessageListener(filter = "/admin")
     public void setAdmin(Message message) {
-        helper.respond(message, () -> {
 
-            securityService.requireRootAdmin(message.from().id());
-            User user = helper.getTargetUser(message);
-            userService.setAdmin(user.getId(), true);
-            return "Пользователь " + helper.userLink(user) + " наделён полномочиями админа";
-        });
+        User user = helper.getTargetUser(message);
+        userService.setAdmin(user.getId(), true);
+        String response = "Пользователь " + helper.userLink(user) + " наделён полномочиями админа";
+        helper.reply(response, message);
+
     }
 
+    @Root
+    @Respond
     @MessageListener(filter = "/noadmin")
     public void setNoAdmin(Message message) {
-        helper.respond(message, () -> {
 
-            securityService.requireRootAdmin(message.from().id());
-            User user = helper.getTargetUser(message);
-            userService.setAdmin(user.getId(), false);
-            return "Пользователь " + helper.userLink(user) + " освобождён от полномочий админа";
-        });
+        User user = helper.getTargetUser(message);
+        userService.setAdmin(user.getId(), false);
+        String response = "Пользователь " + helper.userLink(user) + " освобождён от полномочий админа";
+        helper.reply(response, message);
     }
 
+    @Admin
+    @Respond
     @MessageListener(filter = "/gban")
     public void gban(Message message) {
-        helper.respond(message, () -> {
 
-            securityService.requireAdmin(message.from().id());
-            User user = helper.getTargetUser(message);
-            userService.setUserAccessLevel(user.getId(), "ban");
-            return helper.userLink(user) + " заблокирован во всех чатах";
-        });
+        User user = helper.getTargetUser(message);
+        userService.setUserAccessLevel(user.getId(), "ban");
+        String response = helper.userLink(user) + " заблокирован во всех чатах";
+        helper.reply(response, message);
     }
 
+    @Admin
+    @Respond
     @MessageListener(filter = "/close")
     public void close(Message message) {
-        helper.respond(message, () -> {
 
-            securityService.requireAdmin(message.from().id());
-            settingsService.setRegistrationOpen(false);
-            return "Регистрация новых пользователей временно приостановлена";
-        });
+        settingsService.setRegistrationOpen(false);
+        String response = "Регистрация новых пользователей временно приостановлена";
+        helper.reply(response, message);
     }
 
+    @Admin
+    @Respond
     @MessageListener(filter = "/open")
     public void open(Message message) {
-        helper.respond(message, () -> {
 
-            securityService.requireAdmin(message.from().id());
-            settingsService.setRegistrationOpen(true);
-            return "Регистрация новых пользователей возобновлена";
-        });
+        settingsService.setRegistrationOpen(true);
+        String response = "Регистрация новых пользователей возобновлена";
+        helper.reply(response, message);
     }
 
+    @Admin
+    @Respond
     @MessageListener(filter = "/settings")
     public void settings(Message message) {
-        helper.respond(message, () -> {
 
-            securityService.requireAdmin(message.from().id());
-            return settingsService.getSettings().toString();
-        });
+        String response = settingsService.getSettings().toString();
+        helper.reply(response, message);
     }
 
+    @Admin
+    @Respond
     @MessageListener(filter = "/guser")
     public void getUserInfo(Message message) {
-        helper.respond(message, () -> {
 
-            securityService.requireAdmin(message.from().id());
-            User user = helper.getTargetUser(message);
-            user = userService.getUser(user.getId());
-            return user.toString();
-        });
+        User user = helper.getTargetUser(message);
+        user = userService.getUser(user.getId());
+        String response = user.toString();
+        helper.reply(response, message);
     }
 
+    @Admin
+    @Respond
     @MessageListener(filter = "/chatinfo")
     public void getChatInfo(Message message) {
-        helper.respond(message, () -> {
 
-            securityService.requireAdmin(message.from().id());
-            return chatService.getChat(message.chat().id()).toString();
-        });
+        String response = chatService.getChat(message.chat().id()).toString();
+        helper.reply(response, message);
     }
 
     @MessageListener(filter = "private | supergroup")
@@ -196,10 +198,10 @@ public class BaseModule {
     }
 
     @Autowired
-    public BaseModule(UserService userService, ChatService chatService, SecurityService securityService, SettingsService settingsService, ControllerHelper helper) {
+    public BaseModule(UserService userService, ChatService chatService, SettingsService settingsService, ControllerHelper helper) {
+
         this.userService = userService;
         this.chatService = chatService;
-        this.securityService = securityService;
         this.settingsService = settingsService;
         this.helper = helper;
     }

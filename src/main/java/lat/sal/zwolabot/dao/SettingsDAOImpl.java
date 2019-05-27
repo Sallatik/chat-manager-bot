@@ -11,7 +11,7 @@ import javax.persistence.EntityManager;
 import javax.swing.text.html.parser.Entity;
 
 @Repository
-public class SettingsDAOImpl implements SettingsDAO {
+class SettingsDAOImpl implements SettingsDAO {
 
     private EntityManager entityManager;
 

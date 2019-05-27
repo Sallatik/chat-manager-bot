@@ -11,11 +11,10 @@ import lat.sal.zwolabot.entity.User;
 import lat.sal.zwolabot.telegram.TelegramFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ChatServiceImpl implements ChatService {
+class ChatServiceImpl implements ChatService {
 
     private ChatDAO chatDAO;
     private UserDAO userDAO;
@@ -152,6 +151,14 @@ public class ChatServiceImpl implements ChatService {
         Chat chat = chatDAO.getChat(id);
         errorManager.requireNonNull(chat);
         return chat;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isModerator(long chatId, long userId) {
+
+        ChatUser chatUser = chatUserDAO.getChatUser(chatId, userId);
+        return chatUser != null && chatUser.isModerator();
     }
 
     @Autowired

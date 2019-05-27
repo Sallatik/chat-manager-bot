@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 @Repository
-public class UserDAOImpl implements UserDAO {
+class UserDAOImpl implements UserDAO {
 
     private EntityManager entityManager;
 

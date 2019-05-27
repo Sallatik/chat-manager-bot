@@ -4,16 +4,15 @@ import lat.sal.zwolabot.dao.SettingsDAO;
 import lat.sal.zwolabot.entity.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class SettingsServiceImpl implements SettingsService {
+class SettingsServiceImpl implements SettingsService {
 
     private SettingsDAO settingsDAO;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Settings getSettings() {
         return getOrCreateSettings();
     }

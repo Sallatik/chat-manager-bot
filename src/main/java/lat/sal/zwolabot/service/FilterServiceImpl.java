@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class FilterServiceImpl implements FilterService {
+class FilterServiceImpl implements FilterService {
 
     private TelegramFacade telegramFacade;
     private FilterDAO filterDAO;

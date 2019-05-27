@@ -28,4 +28,6 @@ public interface ChatService {
     ChatUser getChatUser(long chatId, long userId);
 
     Chat getChat(long id);
+
+    boolean isModerator(long chatId, long userId);
 }

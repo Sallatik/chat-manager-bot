@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 @Repository
-public class ChatDAOImpl implements ChatDAO {
+class ChatDAOImpl implements ChatDAO {
 
     private EntityManager entityManager;
 

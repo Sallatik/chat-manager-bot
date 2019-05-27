@@ -9,7 +9,7 @@ import javax.annotation.PostConstruct;
 import java.util.Set;
 
 @Repository
-public class FilterDAOImpl implements FilterDAO {
+class FilterDAOImpl implements FilterDAO {
 
     private Jedis jedis;
 

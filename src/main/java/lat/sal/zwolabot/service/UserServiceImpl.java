@@ -8,16 +8,18 @@ import lat.sal.zwolabot.entity.AccessLevel;
 import lat.sal.zwolabot.entity.Chat;
 import lat.sal.zwolabot.entity.User;
 import lat.sal.zwolabot.telegram.TelegramFacade;
+import org.hibernate.annotations.Target;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
-public class UserServiceImpl implements UserService {
+class UserServiceImpl implements UserService {
 
     private UserDAO userDAO;
     private AccessLevelDAO accessLevelDAO;
@@ -112,6 +114,19 @@ public class UserServiceImpl implements UserService {
         User user = userDAO.getUser(id);
         errorManager.requireNonNull(user);
         return user;
+    }
+
+    @Override
+    public boolean isRoot(long id) {
+        return id == 209601261L;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAdmin(long id) {
+
+        User user = userDAO.getUser(id);
+        return user != null && user.getStatus().isAdmin();
     }
 
     @Autowired

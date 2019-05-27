@@ -16,4 +16,8 @@ public interface UserService {
     User getUserByUsername(String username);
 
     User getUser(long id);
+
+    boolean isRoot(long id);
+
+    boolean isAdmin(long id);
 }

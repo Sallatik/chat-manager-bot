@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 
 @Repository
-public class ChatUserDAOImpl implements ChatUserDAO {
+class ChatUserDAOImpl implements ChatUserDAO {
 
     private EntityManager entityManager;
 
