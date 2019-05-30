@@ -98,11 +98,16 @@ public class User {
     @Override
     public String toString() {
 
-        return "*Пользователь:* _" + id + "_\n" +
-                "Имя: " + firstName + "\n" +
-                "Фамилия: " + lastName + "\n" +
-                "Ник: @" + username + "\n" +
-                "Уровень доступа: " + accessLevel.getName() + "\n" +
-                "Админ: " + (status.isAdmin() ? "да" : "нет");
+        StringBuilder resultBuilder = new StringBuilder("*Пользователь:* _" + id + "_\n");
+        resultBuilder.append("Имя: " + firstName + "\n");
+        if (lastName != null)
+            resultBuilder.append("Фамилия: " + lastName + "\n");
+        if (username != null)
+            resultBuilder.append("Ник: @" + username + "\n");
+        resultBuilder.append("Уровень доступа: " + accessLevel.getName() + "\n");
+        if (status.isAdmin())
+            resultBuilder.append("*Администратор*");
+
+        return resultBuilder.toString();
     }
 }

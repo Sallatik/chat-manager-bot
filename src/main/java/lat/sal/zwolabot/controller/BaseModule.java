@@ -57,8 +57,12 @@ public class BaseModule {
         LevelAndChats levelAndChats = userService.getLevelAndAvailableChats(message.from().id());
         StringBuilder result = new StringBuilder("Ваш уровень доступа: *" +
                 levelAndChats.getLevel().getName() + "*\n" +
-                levelAndChats.getLevel().getDescription() +
-                "\n\nДоступные чаты:");
+                levelAndChats.getLevel().getDescription());
+
+        if (levelAndChats.getChats().isEmpty())
+            result.append("\n\nНет доступных чатов.");
+        else
+            result.append("\n\nДоступные чаты: ");
 
         for (Chat chat : levelAndChats.getChats())
             result.append("\n[" + chat.getTitle() + "]" +

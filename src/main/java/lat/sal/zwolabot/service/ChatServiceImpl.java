@@ -126,6 +126,7 @@ class ChatServiceImpl implements ChatService {
         ChatUser chatUser = getOrCreateChatUser(chatId, userId);
         chatUser.setBanned(false);
         chatUser.setWarns(0);
+        chatUser.setNote(null);
         telegramFacade.unban(chatId, userId);
     }
 

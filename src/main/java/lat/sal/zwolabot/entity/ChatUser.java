@@ -4,6 +4,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -100,11 +101,19 @@ public class ChatUser {
 
     @Override
     public String toString() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        return "*Пользователь:* _" + chatUserId.getUserId() + "_\n" +
+        String result = "*Пользователь:* _" + chatUserId.getUserId() + "_\n" +
                 "Предупреждений: " + warns + "\n" +
-                "Последнее сообщение: " + (lastMessage != 0 ? new Date(lastMessage * 1000) : "никогда") + "\n" +
-                "Забанен: " + (banned ? "да" : "нет");
+                "Последнее сообщение: " + (lastMessage != 0 ? format.format(new Date(lastMessage * 1000)) : "никогда") + "\n";
+
+        if (banned) {
+            result += "*Забанен* ";
+            if (!note.equals(""))
+                result += "по причине _" + note + "_";
+        }
+
+        return result;
     }
 
     public ChatUser(Chat chat, User user) {

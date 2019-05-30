@@ -2,6 +2,7 @@ package lat.sal.zwolabot.entity;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Chat {
@@ -91,5 +92,18 @@ public class Chat {
                 "Описание: " + description + "\n" +
                 "Уровень доступа: " + accessLevel.getName() + "\n";
                 //"Ссылка: " + inviteLink;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Chat)) return false;
+        Chat chat = (Chat) o;
+        return id == chat.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

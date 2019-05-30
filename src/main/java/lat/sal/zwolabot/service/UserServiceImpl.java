@@ -4,10 +4,7 @@ import lat.sal.zwolabot.dao.AccessLevelDAO;
 import lat.sal.zwolabot.dao.ChatDAO;
 import lat.sal.zwolabot.dao.SettingsDAO;
 import lat.sal.zwolabot.dao.UserDAO;
-import lat.sal.zwolabot.entity.AccessLevel;
-import lat.sal.zwolabot.entity.Chat;
-import lat.sal.zwolabot.entity.Settings;
-import lat.sal.zwolabot.entity.User;
+import lat.sal.zwolabot.entity.*;
 import lat.sal.zwolabot.telegram.TelegramFacade;
 import org.hibernate.annotations.Target;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +94,13 @@ class UserServiceImpl implements UserService {
                 .filter(chat -> chat.getAccessLevel().getValue() <= level.getValue())
                 .collect(Collectors.toList());
 
+        List<Chat> bannedChats = user.getChats()
+                .stream()
+                .filter(ChatUser::isBanned)
+                .map(ChatUser::getChat)
+                .collect(Collectors.toList());
+
+        chats.removeAll(bannedChats);
         return new LevelAndChats(level, chats);
     }
 
