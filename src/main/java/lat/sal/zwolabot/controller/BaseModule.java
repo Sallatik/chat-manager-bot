@@ -1,12 +1,16 @@
 package lat.sal.zwolabot.controller;
 
 import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.request.Keyboard;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
+import com.pengrad.telegrambot.request.SendMessage;
 import lat.sal.zwolabot.controller.annotation.Admin;
 import lat.sal.zwolabot.controller.annotation.Respond;
 import lat.sal.zwolabot.controller.annotation.Root;
 import lat.sal.zwolabot.entity.Chat;
 import lat.sal.zwolabot.entity.User;
 import lat.sal.zwolabot.service.*;
+import lat.sal.zwolabot.telegram.TgSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sallat.jelebot.annotation.listeners.MessageListener;
@@ -18,6 +22,7 @@ public class BaseModule {
     private ChatService chatService;
     private SettingsService settingsService;
     private ControllerHelper helper;
+    private TgSender tgSender;
 
     @Respond
     @MessageListener(filter = "/start & private")
@@ -27,12 +32,27 @@ public class BaseModule {
         userService.addUser(user);
         String response = "Добро пожаловать! Чтобы получить информацию о вашем уровне доступа, " +
                 "а так же список доступных чатов, используйте команду /info";
-        helper.reply(response, message);
+
+        SendMessage sendMessage = new SendMessage(message.chat().id(), response)
+                .replyMarkup(new ReplyKeyboardMarkup(new String [] {"Доступные чаты"}).resizeKeyboard(true));
+
+        tgSender.executeOrLog(sendMessage);
     }
 
     @Respond
     @MessageListener(filter = "/info & private")
-    public void getLevel(Message message) {
+    public void getLevelByCommand(Message message) {
+        getLevel(message);
+    }
+
+    @Respond
+    @MessageListener(filter = "private & text")
+    public void getLevelByButton(Message message) {
+        if (message.text().equals("Доступные чаты"))
+            getLevel(message);
+    }
+
+    private void getLevel(Message message) {
 
         LevelAndChats levelAndChats = userService.getLevelAndAvailableChats(message.from().id());
         StringBuilder result = new StringBuilder("Ваш уровень доступа: *" +
@@ -53,7 +73,7 @@ public class BaseModule {
     @MessageListener(filter = "/addchat & text & supergroup")
     public void addChat(Message message) {
 
-        String level = helper.getArgument(message.text(), "/addchat".length());
+        String level = helper.getSingleArg(message.text());
 
         chatService.addChat(message.chat().id(), level);
         String response = "Чат успешно добавлен в систему с уровнем доступа '" + level + "'";
@@ -72,11 +92,12 @@ public class BaseModule {
 
     @Admin
     @Respond
-    @MessageListener(filter = "/setlevel & text & reply")
+    @MessageListener(filter = "/setlevel & text")
     public void setUserLevel(Message message) {
 
-        String level = helper.getArgument(message.text(), "/setlevel".length());
-        User user = new User(message.replyToMessage().from());
+        User user = helper.getTargetUser(message);
+        String level = helper.getComment(message);
+
         userService.setUserAccessLevel(user.getId(), level);
         String response = "Пользователю " + helper.userLink(user) + " присвоен уровень доступа '" + level + "'";
         helper.reply(response, message);
@@ -198,11 +219,11 @@ public class BaseModule {
     }
 
     @Autowired
-    public BaseModule(UserService userService, ChatService chatService, SettingsService settingsService, ControllerHelper helper) {
-
+    public BaseModule(UserService userService, ChatService chatService, SettingsService settingsService, ControllerHelper helper, TgSender tgSender) {
         this.userService = userService;
         this.chatService = chatService;
         this.settingsService = settingsService;
         this.helper = helper;
+        this.tgSender = tgSender;
     }
 }

@@ -21,6 +21,16 @@ public class ControllerHelper {
         return text.trim().substring(offset).trim();
     }
 
+    public String getSecondArgument(String text, int offset) {
+
+        String args = getArgument(text, offset);
+        String [] argsArray = args.split("\\s");
+        if (argsArray.length == 0)
+            return "";
+        String first = argsArray[0];
+        return args.substring(first.length()).trim();
+    }
+
     public void reply(String text, Message message) {
 
         tgSender.executeOrLog(
@@ -73,6 +83,32 @@ public class ControllerHelper {
 
     public String packLink(String packName) {
         return "[" + packName + "](https://t.me/addstickers/" + packName + ") ";
+    }
+
+    public String getSingleArg(String text) {
+        return cutFirstWord(text);
+    }
+
+    public String getSecondArg(String text) {
+        return cutFirstWord(cutFirstWord(text));
+    }
+
+    private String cutFirstWord(String text) {
+
+        text = text.trim();
+        String [] words = text.split("\\s");
+        if (words.length < 2)
+            return "";
+        else
+            return text.substring(words[0].length()).trim();
+    }
+
+    public String getComment(Message message) {
+
+        if (message.replyToMessage() != null)
+            return getSingleArg(message.text());
+        else
+            return getSecondArg(message.text());
     }
 
     @Autowired

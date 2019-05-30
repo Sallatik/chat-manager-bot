@@ -6,6 +6,7 @@ import lat.sal.zwolabot.dao.SettingsDAO;
 import lat.sal.zwolabot.dao.UserDAO;
 import lat.sal.zwolabot.entity.AccessLevel;
 import lat.sal.zwolabot.entity.Chat;
+import lat.sal.zwolabot.entity.Settings;
 import lat.sal.zwolabot.entity.User;
 import lat.sal.zwolabot.telegram.TelegramFacade;
 import org.hibernate.annotations.Target;
@@ -35,7 +36,8 @@ class UserServiceImpl implements UserService {
     @Transactional
     public void addUser(User user) {
 
-        errorManager.requireRegistrationOpen(settingsDAO.getSettings().isRegistrationOpen());
+        Settings settings = settingsDAO.getSettings();
+        errorManager.requireRegistrationOpen(settings != null && settings.isRegistrationOpen());
         errorManager.requireNull(userDAO.getUser(user.getId()));
         AccessLevel accessLevel = accessLevelDAO.getAccessLevel(defaultAccessLevel);
         errorManager.requireNonNull(accessLevel);

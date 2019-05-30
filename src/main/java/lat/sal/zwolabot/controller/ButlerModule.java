@@ -22,7 +22,7 @@ public class ButlerModule {
     public void ban(Message message) {
 
         User user = helper.getTargetUser(message);
-        String note = ""; // todo: fix
+        String note = helper.getComment(message);
         chatService.ban(message.chat().id(), user.getId(), note);
         String response = helper.userLink(new User(message.from())) + " забанил(а) пользователя " + helper.userLink(user)
                 + (note.equals("") ? "" : " по причине: _" + note + "_.") + "\nПомянем!";
