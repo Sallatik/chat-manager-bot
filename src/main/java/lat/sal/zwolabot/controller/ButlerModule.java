@@ -15,6 +15,7 @@ public class ButlerModule {
 
     private ControllerHelper helper;
     private ChatService chatService;
+    private Notifier notifier;
 
     @Moderator
     @Respond
@@ -27,6 +28,7 @@ public class ButlerModule {
         String response = helper.userLink(new User(message.from())) + " забанил(а) пользователя " + helper.userLink(user)
                 + (note.equals("") ? "" : " по причине: _" + note + "_.") + "\nПомянем!";
         helper.reply(response, message);
+        notifier.notifyBan(user.getId(), message.chat(), note, message.from());
     }
 
     @Moderator
@@ -38,6 +40,7 @@ public class ButlerModule {
         chatService.unban(message.chat().id(), user.getId());
         String response = helper.userLink(new User(message.from())) + " разбанил(а) пользователя " + helper.userLink(user);
         helper.reply(response, message);
+        notifier.notifyUnban(user.getId(), message.chat(), message.from());
     }
 
     @Admin
@@ -49,6 +52,7 @@ public class ButlerModule {
         chatService.setModerator(message.chat().id(), user.getId(), true);
         String response = helper.userLink(user) + " теперь модератор.";
         helper.reply(response, message);
+        notifier.notifyModerator(user.getId(), message.chat(), message.from());
     }
 
     @Admin
@@ -60,6 +64,7 @@ public class ButlerModule {
         chatService.setModerator(message.chat().id(), user.getId(), false);
         String response = helper.userLink(user) + " больше не модератор.";
         helper.reply(response, message);
+        notifier.notifyNoModerator(user.getId(), message.chat(), message.from());
     }
 
     @Moderator
@@ -96,9 +101,9 @@ public class ButlerModule {
     }
 
     @Autowired
-    public ButlerModule(ControllerHelper helper, ChatService chatService) {
-
+    public ButlerModule(ControllerHelper helper, ChatService chatService, Notifier notifier) {
         this.helper = helper;
         this.chatService = chatService;
+        this.notifier = notifier;
     }
 }

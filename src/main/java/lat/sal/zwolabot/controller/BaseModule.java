@@ -23,6 +23,7 @@ public class BaseModule {
     private SettingsService settingsService;
     private ControllerHelper helper;
     private TgSender tgSender;
+    private Notifier notifier;
 
     @Respond
     @MessageListener(filter = "/start & private")
@@ -105,6 +106,7 @@ public class BaseModule {
         userService.setUserAccessLevel(user.getId(), level);
         String response = "Пользователю " + helper.userLink(user) + " присвоен уровень доступа '" + level + "'";
         helper.reply(response, message);
+        notifier.notifyNewLevel(user.getId(), level, message.from());
     }
 
     @Root
@@ -116,6 +118,7 @@ public class BaseModule {
         userService.setAdmin(user.getId(), true);
         String response = "Пользователь " + helper.userLink(user) + " наделён полномочиями админа";
         helper.reply(response, message);
+        notifier.notifyAdmin(user.getId(), message.from());
 
     }
 
@@ -128,6 +131,7 @@ public class BaseModule {
         userService.setAdmin(user.getId(), false);
         String response = "Пользователь " + helper.userLink(user) + " освобождён от полномочий админа";
         helper.reply(response, message);
+        notifier.notifyNoAdmin(user.getId(), message.from());
     }
 
     @Admin
@@ -139,6 +143,7 @@ public class BaseModule {
         userService.setUserAccessLevel(user.getId(), "ban");
         String response = helper.userLink(user) + " заблокирован во всех чатах";
         helper.reply(response, message);
+        notifier.notifyGban(user.getId(), message.from());
     }
 
     @Admin
@@ -223,11 +228,12 @@ public class BaseModule {
     }
 
     @Autowired
-    public BaseModule(UserService userService, ChatService chatService, SettingsService settingsService, ControllerHelper helper, TgSender tgSender) {
+    public BaseModule(UserService userService, ChatService chatService, SettingsService settingsService, ControllerHelper helper, TgSender tgSender, Notifier notifier) {
         this.userService = userService;
         this.chatService = chatService;
         this.settingsService = settingsService;
         this.helper = helper;
         this.tgSender = tgSender;
+        this.notifier = notifier;
     }
 }
