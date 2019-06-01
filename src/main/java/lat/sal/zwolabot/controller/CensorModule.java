@@ -24,7 +24,7 @@ public class CensorModule {
         String word = helper.getArgument(message.text(), "/filter".length());
         filterService.restrictWord(word);
         String response = "Говорить '" + word + "' отныне запрещено во всех чатах системы";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -35,7 +35,7 @@ public class CensorModule {
         String word = helper.getArgument(message.text(), "/unfilter".length());
         filterService.unrestrictWord(word);
         String response = "Теперь можно говорить '" + word + "'!";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -50,7 +50,7 @@ public class CensorModule {
 
         filterService.unrestrictSticker(sticker.fileId());
         String response = "Этот стикер больше не под запретом!";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -75,7 +75,7 @@ public class CensorModule {
 
         filterService.unrestrictPack(packName);
         String response = "Стикерпак '" + helper.packLink(packName) + "' снова можно использовать!";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -90,7 +90,7 @@ public class CensorModule {
 
         filterService.restrictSticker(sticker.fileId());
         String response = "Этот стикер теперь под запретом";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -105,7 +105,7 @@ public class CensorModule {
 
         filterService.restrictPack(sticker.setName());
         String response = "Стикерпак '" + helper.packLink(sticker.setName()) + "' теперь под запретом";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -114,7 +114,7 @@ public class CensorModule {
     public void getRestrictedWords(Message message) {
 
         String response = "Фильтруемые слова и фразы: \n" + filterService.getRestrictedWords();
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -127,7 +127,7 @@ public class CensorModule {
         for (String packName : filterService.getRestrictedPacks())
             responseBuilder.append(helper.packLink(packName));
         String response = responseBuilder.toString();
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin

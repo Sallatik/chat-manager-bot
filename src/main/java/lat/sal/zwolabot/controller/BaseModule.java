@@ -71,7 +71,7 @@ public class BaseModule {
                     "(" + chat.getInviteLink() + "): " + (chat.getDescription() == null ? "" : chat.getDescription()));
 
         String response = result.toString();
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -83,7 +83,7 @@ public class BaseModule {
 
         chatService.addChat(message.chat().id(), level);
         String response = "Чат успешно добавлен в систему с уровнем доступа '" + level + "'";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -93,7 +93,7 @@ public class BaseModule {
 
         chatService.updateChat(message.chat().id());
         String response = "Информация о чате успешно обновлена";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -106,7 +106,7 @@ public class BaseModule {
 
         userService.setUserAccessLevel(user.getId(), level);
         String response = "Пользователю " + helper.userLink(user) + " присвоен уровень доступа '" + level + "'";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
         notifier.notifyNewLevel(user.getId(), level, message.from());
     }
 
@@ -118,7 +118,7 @@ public class BaseModule {
         User user = helper.getTargetUser(message);
         userService.setAdmin(user.getId(), true);
         String response = "Пользователь " + helper.userLink(user) + " наделён полномочиями админа";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
         notifier.notifyAdmin(user.getId(), message.from());
 
     }
@@ -131,7 +131,7 @@ public class BaseModule {
         User user = helper.getTargetUser(message);
         userService.setAdmin(user.getId(), false);
         String response = "Пользователь " + helper.userLink(user) + " освобождён от полномочий админа";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
         notifier.notifyNoAdmin(user.getId(), message.from());
     }
 
@@ -143,7 +143,7 @@ public class BaseModule {
         User user = helper.getTargetUser(message);
         userService.setUserAccessLevel(user.getId(), "ban");
         String response = helper.userLink(user) + " заблокирован во всех чатах";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
         notifier.notifyGban(user.getId(), message.from());
     }
 
@@ -154,7 +154,7 @@ public class BaseModule {
 
         settingsService.setRegistrationOpen(false);
         String response = "Регистрация новых пользователей временно приостановлена";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -164,7 +164,7 @@ public class BaseModule {
 
         settingsService.setRegistrationOpen(true);
         String response = "Регистрация новых пользователей возобновлена";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -174,7 +174,7 @@ public class BaseModule {
 
         settingsService.setAutoKickOn(true);
         String response = "Автокик молчунов включён";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -184,7 +184,7 @@ public class BaseModule {
 
         settingsService.setAutoKickOn(false);
         String response = "Автокик молчунов выключен";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -198,7 +198,7 @@ public class BaseModule {
             int days = Integer.parseInt(arg);
             settingsService.setMaxDays(days);
             String response = "Максимальное время молчания - " + days + " cуток.";
-            helper.reply(response, message);
+            helper.replyDelete(response, message);
 
         } catch (NumberFormatException ex) {
             throw new ZwolabotException("'" + arg + "' не является валидным числом.");
@@ -211,7 +211,7 @@ public class BaseModule {
     public void settings(Message message) {
 
         String response = settingsService.getSettings().toString();
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -222,7 +222,7 @@ public class BaseModule {
         User user = helper.getTargetUser(message);
         user = userService.getUser(user.getId());
         String response = user.toString();
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -271,7 +271,7 @@ public class BaseModule {
                 "Для верховного:\n" +
                 "/admin @юзернейм - сделать админом\n" +
                 "/noadmin @юзернейм - сделать не админом";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Admin
@@ -280,7 +280,7 @@ public class BaseModule {
     public void getChatInfo(Message message) {
 
         String response = chatService.getChat(message.chat().id()).toString();
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @MessageListener(filter = "private | supergroup")

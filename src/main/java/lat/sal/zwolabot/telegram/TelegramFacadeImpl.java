@@ -1,5 +1,6 @@
 package lat.sal.zwolabot.telegram;
 
+import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.GetChatResponse;
 import com.pengrad.telegrambot.response.StringResponse;
@@ -57,7 +58,7 @@ public class TelegramFacadeImpl implements TelegramFacade{
     @Override
     public void sendMessage(String text, long chatId) {
 
-        tgSender.executeOrLog(new SendMessage(chatId, text));
+        tgSender.executeOrLog(new SendMessage(chatId, text).parseMode(ParseMode.Markdown).disableWebPagePreview(true));
     }
 
     @Autowired

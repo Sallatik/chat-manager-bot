@@ -27,7 +27,7 @@ public class ButlerModule {
         chatService.ban(message.chat().id(), user.getId(), note);
         String response = helper.userLink(new User(message.from())) + " забанил пользователя " + helper.userLink(user)
                 + (note.equals("") ? "" : " по причине: _" + note + "_.") + "\nПомянем!";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
         notifier.notifyBan(user.getId(), message.chat(), note, message.from());
     }
 
@@ -39,7 +39,7 @@ public class ButlerModule {
         User user = helper.getTargetUser(message);
         chatService.unban(message.chat().id(), user.getId());
         String response = helper.userLink(new User(message.from())) + " разбанил пользователя " + helper.userLink(user);
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
         notifier.notifyUnban(user.getId(), message.chat(), message.from());
     }
 
@@ -51,7 +51,7 @@ public class ButlerModule {
         User user = helper.getTargetUser(message);
         chatService.setModerator(message.chat().id(), user.getId(), true);
         String response = helper.userLink(user) + " теперь модератор.";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
         notifier.notifyModerator(user.getId(), message.chat(), message.from());
     }
 
@@ -63,7 +63,7 @@ public class ButlerModule {
         User user = helper.getTargetUser(message);
         chatService.setModerator(message.chat().id(), user.getId(), false);
         String response = helper.userLink(user) + " больше не модератор.";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
         notifier.notifyNoModerator(user.getId(), message.chat(), message.from());
     }
 
@@ -76,7 +76,7 @@ public class ButlerModule {
         int warns = chatService.warn(message.chat().id(), user.getId());
         String response = helper.userLink(user) + " предупреждён: " + warns + "/3\n" +
                 (warns == 3 ? "И забанен, собрав максимальное количество предупреждений. Помянем!" : "");
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Moderator
@@ -87,7 +87,7 @@ public class ButlerModule {
         User user = helper.getTargetUser(message);
         chatService.clearWarns(message.chat().id(), user.getId());
         String response = "Рабу божию " + helper.userLink(user) + " были отпущены все грехи. Аминь!";
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Moderator
@@ -97,7 +97,7 @@ public class ButlerModule {
 
         User user = helper.getTargetUser(message);
         String response = chatService.getChatUser(message.chat().id(), user.getId()).toString();
-        helper.reply(response, message);
+        helper.replyDelete(response, message);
     }
 
     @Autowired

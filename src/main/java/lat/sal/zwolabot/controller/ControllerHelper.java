@@ -2,6 +2,7 @@ package lat.sal.zwolabot.controller;
 
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.ParseMode;
+import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendSticker;
 import lat.sal.zwolabot.ZwolabotException;
@@ -41,6 +42,12 @@ public class ControllerHelper {
         );
     }
 
+    public void replyDelete(String text, Message message) {
+
+        tgSender.executeOrLog(new SendMessage(message.chat().id(), text).disableWebPagePreview(true).parseMode(ParseMode.Markdown));
+        tgSender.executeOrLog(new DeleteMessage(message.chat().id(), message.messageId()));
+    }
+
     public void stickerReply(String sticker, Message message) {
 
         tgSender.executeOrLog(
@@ -56,7 +63,7 @@ public class ControllerHelper {
 
         } else {
 
-            String [] parts = message.text().trim().split("\\s");
+            String [] parts = message.text().trim().split("\\s+");
 
             if (parts.length < 2)
                 throw new ZwolabotException("каво");
@@ -96,7 +103,7 @@ public class ControllerHelper {
     private String cutFirstWord(String text) {
 
         text = text.trim();
-        String [] words = text.split("\\s");
+        String [] words = text.split("\\s+");
         if (words.length < 2)
             return "";
         else
