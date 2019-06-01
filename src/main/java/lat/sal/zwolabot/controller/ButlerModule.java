@@ -25,7 +25,7 @@ public class ButlerModule {
         User user = helper.getTargetUser(message);
         String note = helper.getComment(message);
         chatService.ban(message.chat().id(), user.getId(), note);
-        String response = helper.userLink(new User(message.from())) + " забанил(а) пользователя " + helper.userLink(user)
+        String response = helper.userLink(new User(message.from())) + " забанил пользователя " + helper.userLink(user)
                 + (note.equals("") ? "" : " по причине: _" + note + "_.") + "\nПомянем!";
         helper.reply(response, message);
         notifier.notifyBan(user.getId(), message.chat(), note, message.from());
@@ -38,7 +38,7 @@ public class ButlerModule {
 
         User user = helper.getTargetUser(message);
         chatService.unban(message.chat().id(), user.getId());
-        String response = helper.userLink(new User(message.from())) + " разбанил(а) пользователя " + helper.userLink(user);
+        String response = helper.userLink(new User(message.from())) + " разбанил пользователя " + helper.userLink(user);
         helper.reply(response, message);
         notifier.notifyUnban(user.getId(), message.chat(), message.from());
     }

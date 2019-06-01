@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import redis.clients.jedis.Jedis;
 import sallat.jelebot.Jelebot;
 import sallat.jelebot.update.HttpWebhookUpdateSource;
@@ -21,6 +22,7 @@ import sallat.jelebot.update.UpdateSource;
 import java.net.InetSocketAddress;
 
 @Configuration
+@EnableScheduling
 public class Config {
 
     @Value("${zwolabot.heroku}")

@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
+import lat.sal.zwolabot.ZwolabotException;
 import lat.sal.zwolabot.controller.annotation.Admin;
 import lat.sal.zwolabot.controller.annotation.Respond;
 import lat.sal.zwolabot.controller.annotation.Root;
@@ -164,6 +165,44 @@ public class BaseModule {
         settingsService.setRegistrationOpen(true);
         String response = "Регистрация новых пользователей возобновлена";
         helper.reply(response, message);
+    }
+
+    @Admin
+    @Respond
+    @MessageListener(filter = "/autokickon")
+    public void autoKickOn(Message message) {
+
+        settingsService.setAutoKickOn(true);
+        String response = "Автокик молчунов включён";
+        helper.reply(response, message);
+    }
+
+    @Admin
+    @Respond
+    @MessageListener(filter = "/autokickoff")
+    public void autoKickOff(Message message) {
+
+        settingsService.setAutoKickOn(false);
+        String response = "Автокик молчунов выключен";
+        helper.reply(response, message);
+    }
+
+    @Admin
+    @Respond
+    @MessageListener(filter = "/maxdays & text")
+    public void setMaxDays(Message message) {
+
+        String arg = helper.getSingleArg(message.text());
+        try {
+
+            int days = Integer.parseInt(arg);
+            settingsService.setMaxDays(days);
+            String response = "Максимальное время молчания - " + days + " cуток.";
+            helper.reply(response, message);
+
+        } catch (NumberFormatException ex) {
+            throw new ZwolabotException("'" + arg + "' не является валидным числом.");
+        }
     }
 
     @Admin

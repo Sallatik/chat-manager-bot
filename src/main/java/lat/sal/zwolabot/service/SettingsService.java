@@ -8,4 +8,7 @@ public interface SettingsService {
 
     void setRegistrationOpen(boolean registrationOpen);
 
+    void setAutoKickOn(boolean autoKickOn);
+
+    void setMaxDays(int maxDays);
 }

@@ -4,6 +4,7 @@ import lat.sal.zwolabot.entity.Chat;
 import lat.sal.zwolabot.entity.ChatUser;
 
 import java.util.Date;
+import java.util.List;
 
 public interface ChatService {
 

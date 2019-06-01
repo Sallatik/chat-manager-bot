@@ -10,6 +10,8 @@ public class Settings {
     private int id = 1;
 
     private boolean registrationOpen;
+    private boolean autoKickOn;
+    private int maxIdleDays = 14;
 
     public boolean isRegistrationOpen() {
         return registrationOpen;
@@ -19,11 +21,29 @@ public class Settings {
         this.registrationOpen = registrationOpen;
     }
 
+    public int getMaxIdleDays() {
+        return maxIdleDays;
+    }
+
+    public void setMaxIdleDays(int maxIdleDays) {
+        this.maxIdleDays = maxIdleDays;
+    }
+
+    public boolean isAutoKickOn() {
+        return autoKickOn;
+    }
+
+    public void setAutoKickOn(boolean autoKickOn) {
+        this.autoKickOn = autoKickOn;
+    }
+
     public Settings() { }
 
     @Override
     public String toString() {
         return "*Текущие настройки:* \n" +
-                "Регистрация: " + (registrationOpen ? "открыта" : "закрыта");
+                "Регистрация: " + (registrationOpen ? "открыта" : "закрыта") + "\n" +
+                "Автокик молчунов: " + (autoKickOn ? "включён" : "выключен") + "\n" +
+                "Макисмальное время молчания: " + maxIdleDays + " cуток";
     }
 }

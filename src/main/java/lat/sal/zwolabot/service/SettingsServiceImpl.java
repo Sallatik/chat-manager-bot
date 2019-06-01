@@ -37,6 +37,18 @@ class SettingsServiceImpl implements SettingsService {
         return settings;
     }
 
+    @Override
+    @Transactional
+    public void setAutoKickOn(boolean autoKickOn) {
+        getOrCreateSettings().setAutoKickOn(autoKickOn);
+    }
+
+    @Override
+    @Transactional
+    public void setMaxDays(int maxDays) {
+        getOrCreateSettings().setMaxIdleDays(maxDays);
+    }
+
     @Autowired
     public SettingsServiceImpl(SettingsDAO settingsDAO) {
         this.settingsDAO = settingsDAO;
