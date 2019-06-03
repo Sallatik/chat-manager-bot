@@ -28,6 +28,8 @@ class UserServiceImpl implements UserService {
 
     @Value("${zwolabot.default-access-level}")
     private String defaultAccessLevel;
+    @Value("${zwolabot.ban-access-level}")
+    private String banAccessLevel;
 
     @Override
     @Transactional
@@ -53,9 +55,7 @@ class UserServiceImpl implements UserService {
             persistent.update(user);
     }
 
-    @Override
-    @Transactional
-    public void setUserAccessLevel(long id, String level) {
+    public void setAccessLevel(long id, String level) {
 
         User user = userDAO.getUser(id);
         AccessLevel accessLevel = accessLevelDAO.getAccessLevel(level);
@@ -69,6 +69,18 @@ class UserServiceImpl implements UserService {
             if (chat.getAccessLevel().getValue() > accessLevel.getValue())
                 telegramFacade.kick(chat.getId(), user.getId());
         }
+    }
+
+    @Override
+    @Transactional
+    public void setUserAccessLevel(long id, String accessLevel) {
+        setAccessLevel(id, accessLevel);
+    }
+
+    @Override
+    @Transactional
+    public void gban(long id) {
+        setAccessLevel(id, banAccessLevel);
     }
 
     @Override

@@ -9,6 +9,8 @@ public interface UserService {
 
     void setUserAccessLevel(long id, String accessLevel);
 
+    void gban(long id);
+
     void setAdmin(long id, boolean admin);
 
     LevelAndChats getLevelAndAvailableChats(long id);

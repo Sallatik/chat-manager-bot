@@ -58,7 +58,7 @@ public class TelegramFacadeImpl implements TelegramFacade{
     @Override
     public void sendMessage(String text, long chatId) {
 
-        tgSender.executeOrLog(new SendMessage(chatId, text).parseMode(ParseMode.Markdown).disableWebPagePreview(true));
+        tgSender.executeOrLog(new SendMessage(chatId, text).parseMode(ParseMode.Markdown).disableWebPagePreview(true    ));
     }
 
     @Autowired

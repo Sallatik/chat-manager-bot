@@ -25,22 +25,28 @@ import java.net.InetSocketAddress;
 @EnableScheduling
 public class Config {
 
-    @Value("${zwolabot.heroku}")
-    private boolean heroku;
+    @Value("${zwolabot.use-webhook}")
+    private boolean useWebhook;
 
-    @Autowired
     private ApplicationContext context;
-    @Autowired
     private Environment env;
 
     @Bean
     public UpdateSource updateSource() {
 
-        if (heroku) {
-            String url = env.getProperty("zwolabot.heroku.app-url");
-            int port = Integer.parseInt(System.getenv("PORT"));
+        if (useWebhook) {
+
+            String url = env.getProperty("zwolabot.webhook-url");
+            String portString = System.getenv("PORT");
+
+            if (portString == null)
+                portString = env.getProperty("zwolabot.port");
+
+            int port = Integer.parseInt(portString);
             return new HttpWebhookUpdateSource(url, new InetSocketAddress(port));
+
         } else
+
             return new LongPollingUpdateSource();
     }
 
@@ -65,5 +71,11 @@ public class Config {
     @Bean
     public Jedis jedis() {
         return new Jedis(env.getProperty("zwolabot.redis-url"));
+    }
+
+    @Autowired
+    public Config(ApplicationContext context, Environment env) {
+        this.context = context;
+        this.env = env;
     }
 }
