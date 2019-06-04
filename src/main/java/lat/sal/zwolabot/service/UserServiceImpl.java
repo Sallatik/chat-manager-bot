@@ -6,7 +6,6 @@ import lat.sal.zwolabot.dao.SettingsDAO;
 import lat.sal.zwolabot.dao.UserDAO;
 import lat.sal.zwolabot.entity.*;
 import lat.sal.zwolabot.telegram.TelegramFacade;
-import org.hibernate.annotations.Target;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,8 @@ class UserServiceImpl implements UserService {
     private String defaultAccessLevel;
     @Value("${zwolabot.ban-access-level}")
     private String banAccessLevel;
+    @Value("${zwolabot.root-user-id}")
+    private long rootUserId;
 
     @Override
     @Transactional
@@ -136,7 +137,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public boolean isRoot(long id) {
-        return id == 209601261L;
+        return id == rootUserId;
     }
 
     @Override
