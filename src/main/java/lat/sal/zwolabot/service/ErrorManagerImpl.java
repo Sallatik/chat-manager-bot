@@ -35,7 +35,7 @@ class ErrorManagerImpl implements ErrorManager {
     public void requireNull(User user) {
 
         if (user != null)
-            throw new ZwolabotException("Пользователь уже зарешгистрирован");
+            throw new ZwolabotException("Вы уже зарегистрированы. Используйте /info, чтобы узнать больше.");
     }
 
     @Override

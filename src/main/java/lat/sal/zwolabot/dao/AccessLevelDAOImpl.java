@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.util.List;
 
 @Repository
 class AccessLevelDAOImpl implements AccessLevelDAO {
@@ -15,7 +16,16 @@ class AccessLevelDAOImpl implements AccessLevelDAO {
 
     @Override
     public AccessLevel getAccessLevel(String name) {
-        return entityManager.find(AccessLevel.class, name);
+
+        List<AccessLevel> result = entityManager
+                        .createQuery("from AccessLevel where name like :name", AccessLevel.class)
+                        .setParameter("name", name)
+                        .getResultList();
+
+        if (result.size() == 1)
+            return result.get(0);
+        else
+            return null;
     }
 
     @Override
