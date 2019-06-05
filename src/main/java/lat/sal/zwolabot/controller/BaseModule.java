@@ -64,14 +64,19 @@ public class BaseModule {
         if (levelAndChats.getChats().isEmpty())
             result.append("\n\nНет доступных чатов.");
         else
-            result.append("\n\nДоступные чаты: ");
+            result.append("\n\nДоступные чаты:\n");
 
         for (Chat chat : levelAndChats.getChats())
-            result.append("\n[" + chat.getTitle() + "]" +
-                    "(" + chat.getInviteLink() + "): " + (chat.getDescription() == null ? "" : chat.getDescription()));
+            result.append("\n— [" + chat.getTitle() + "]" +
+                    "(" + chat.getInviteLink() + "): " + (chat.getDescription() == null ? "" : chat.getDescription()) + "\n");
 
         String response = result.toString();
-        helper.replyDelete(response, message);
+
+        String picFileId = settingsService.getSettings().getChatListPicFileId();
+        if (picFileId != null)
+            helper.replyPicCaptionDelete(picFileId, response, message);
+        else
+            helper.replyDelete(response, message);
     }
 
     @Admin
@@ -267,6 +272,8 @@ public class BaseModule {
                 "/badwords - запрещённые слова\n" +
                 "/badpacks - запрещённые паки\n" +
                 "/badstickers - запрещённые стики\n" +
+                "/chatlistpic + фото - установить картинку для списка чатов\n" +
+                "/removechatlistpic - удалить картинку для списка чатов\n" +
                 "\n" +
                 "Для верховного:\n" +
                 "/admin @юзернейм - сделать админом\n" +
@@ -280,6 +287,27 @@ public class BaseModule {
     public void getChatInfo(Message message) {
 
         String response = chatService.getChat(message.chat().id()).toString();
+        helper.replyDelete(response, message);
+    }
+
+    @Admin
+    @Respond
+    @MessageListener(filter = "/chatlistpic & photo")
+    public void chatListPic(Message message) {
+
+        String fileId = message.photo()[0].fileId();
+        settingsService.setChatListPicFileId(fileId);
+        String response = "Новая картинка для списка чатов установлена";
+        helper.replyDelete(response, message);
+    }
+
+    @Admin
+    @Respond
+    @MessageListener(filter = "/removechatlistpic")
+    public void removeChatListPic(Message message) {
+
+        settingsService.setChatListPicFileId(null);
+        String response = "Список чатов теперь отображается без картинки";
         helper.replyDelete(response, message);
     }
 

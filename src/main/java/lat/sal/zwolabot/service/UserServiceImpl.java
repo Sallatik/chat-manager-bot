@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,6 +102,10 @@ class UserServiceImpl implements UserService {
         User user = userDAO.getUser(id);
         errorManager.requireNonNull(user);
 
+        Comparator<Chat> comparator = Comparator.comparingInt(chat -> chat.getAccessLevel().getValue());
+        comparator = comparator.reversed();
+        comparator = comparator.thenComparing(Chat::getTitle);
+
         AccessLevel level = user.getAccessLevel();
         List<Chat> chats = chatDAO.getAllChats()
                 .stream()
@@ -114,6 +119,8 @@ class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
 
         chats.removeAll(bannedChats);
+
+        chats.sort(comparator);
         return new LevelAndChats(level, chats);
     }
 

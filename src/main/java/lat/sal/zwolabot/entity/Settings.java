@@ -12,6 +12,7 @@ public class Settings {
     private boolean registrationOpen;
     private boolean autoKickOn;
     private int maxIdleDays = 14;
+    private String chatListPicFileId;
 
     public boolean isRegistrationOpen() {
         return registrationOpen;
@@ -35,6 +36,14 @@ public class Settings {
 
     public void setAutoKickOn(boolean autoKickOn) {
         this.autoKickOn = autoKickOn;
+    }
+
+    public String getChatListPicFileId() {
+        return chatListPicFileId;
+    }
+
+    public void setChatListPicFileId(String chatListPicFileId) {
+        this.chatListPicFileId = chatListPicFileId;
     }
 
     public Settings() { }

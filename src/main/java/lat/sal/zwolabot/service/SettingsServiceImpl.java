@@ -49,6 +49,12 @@ class SettingsServiceImpl implements SettingsService {
         getOrCreateSettings().setMaxIdleDays(maxDays);
     }
 
+    @Override
+    @Transactional
+    public void setChatListPicFileId(String chatListPicFileId) {
+        getOrCreateSettings().setChatListPicFileId(chatListPicFileId);
+    }
+
     @Autowired
     public SettingsServiceImpl(SettingsDAO settingsDAO) {
         this.settingsDAO = settingsDAO;

@@ -11,4 +11,6 @@ public interface SettingsService {
     void setAutoKickOn(boolean autoKickOn);
 
     void setMaxDays(int maxDays);
+
+    void setChatListPicFileId(String chatListPicFileId);
 }

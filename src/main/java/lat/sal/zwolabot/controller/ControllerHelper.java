@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.request.SendSticker;
 import lat.sal.zwolabot.ZwolabotException;
 import lat.sal.zwolabot.entity.User;
@@ -45,6 +46,12 @@ public class ControllerHelper {
     public void replyDelete(String text, Message message) {
 
         tgSender.executeOrLog(new SendMessage(message.chat().id(), text).disableWebPagePreview(true).parseMode(ParseMode.Markdown));
+        tgSender.executeOrLog(new DeleteMessage(message.chat().id(), message.messageId()));
+    }
+
+    public void replyPicCaptionDelete(String fileId, String caption, Message message) {
+
+        tgSender.executeOrLog(new SendPhoto(message.chat().id(), fileId).caption(caption).parseMode(ParseMode.Markdown));
         tgSender.executeOrLog(new DeleteMessage(message.chat().id(), message.messageId()));
     }
 
