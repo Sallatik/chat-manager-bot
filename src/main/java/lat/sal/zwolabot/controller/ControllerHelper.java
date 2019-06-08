@@ -49,6 +49,10 @@ public class ControllerHelper {
         tgSender.executeOrLog(new DeleteMessage(message.chat().id(), message.messageId()));
     }
 
+    public void delete(long chatId, int messageId) {
+        tgSender.executeOrLog(new DeleteMessage(chatId, messageId));
+    }
+
     public void replyPicCaptionDelete(String fileId, String caption, Message message) {
 
         tgSender.executeOrLog(new SendPhoto(message.chat().id(), fileId).caption(caption).parseMode(ParseMode.Markdown));

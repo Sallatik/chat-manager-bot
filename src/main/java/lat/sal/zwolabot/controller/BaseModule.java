@@ -341,6 +341,8 @@ public class BaseModule {
                         message.date()
                 );
         }
+
+        helper.delete(message.chat().id(), message.messageId());
     }
 
     @Autowired

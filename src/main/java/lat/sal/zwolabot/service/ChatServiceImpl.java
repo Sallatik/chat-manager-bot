@@ -60,7 +60,7 @@ class ChatServiceImpl implements ChatService {
             return; // unknown chat: do nothing
 
         if (user == null || user.getAccessLevel().getValue() < chat.getAccessLevel().getValue()) {
-            telegramFacade.kick(chatId, userId);
+            telegramFacade.ban(chatId, userId);
             return;
         }
 

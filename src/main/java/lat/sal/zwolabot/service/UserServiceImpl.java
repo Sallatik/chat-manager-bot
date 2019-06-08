@@ -69,7 +69,9 @@ class UserServiceImpl implements UserService {
 
         for (Chat chat : chatDAO.getAllChats()) {
             if (chat.getAccessLevel().getValue() > accessLevel.getValue())
-                telegramFacade.kick(chat.getId(), user.getId());
+                telegramFacade.ban(chat.getId(), user.getId());
+            else
+                telegramFacade.unban(chat.getId(), user.getId());
         }
     }
 
